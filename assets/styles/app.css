@@ -1,0 +1,221 @@
+/* Custom overrides & page-specific styles for Sanad */
+
+/* Remove the old sky-blue background and rely on the design system variables */
+body {
+  background: var(--bg);
+}
+
+/* Events page hero */
+.events-hero {
+  padding: var(--space-xl);
+  background: linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(249,250,251,0.8) 100%);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  box-shadow: var(--shadow-lg);
+}
+
+.events-hero h1 {
+  font-size: clamp(2.2rem, 5vw, 3rem);
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+  color: var(--text);
+}
+
+.events-hero p {
+  color: var(--text-soft);
+  font-size: 1rem;
+  margin: 0;
+}
+
+.events-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+/* Event cards */
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-lg);
+  padding: var(--space-lg) 0 var(--space-xl);
+}
+
+.event-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  display: flex;
+  flex-direction: column;
+  transition: var(--t);
+}
+
+.event-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--brand);
+}
+
+.event-card__media {
+  position: relative;
+  height: 220px;
+  background: var(--bg-subtle);
+  overflow: hidden;
+}
+
+.event-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.event-chip {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(13, 148, 136, 0.9);
+  color: white;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  font-weight: 800;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.event-status {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.event-card__body {
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.event-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.event-meta {
+  display: flex;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  align-items: center;
+}
+
+.event-description {
+  color: var(--text-soft);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.event-card__actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  border-top: 1px solid var(--border);
+  background: var(--bg-subtle);
+}
+
+.event-actions-right {
+  display: flex;
+  gap: 10px;
+}
+
+.event-card__footer {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-lg);
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.btn-pill {
+  border-radius: var(--radius-full);
+  padding: 12px 18px;
+  font-weight: 800;
+}
+
+.btn-cta {
+  background: var(--grad);
+  color: white;
+  border: none;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-cta:hover {
+  background: var(--brand-deep);
+}
+
+/* Table fallback (if events are still listed in a table) */
+.table.events-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.table.events-table th,
+.table.events-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.table.events-table th {
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  background: var(--bg-subtle);
+}
+
+.table.events-table tr:hover td {
+  background: var(--bg-subtle);
+}
+
+/* Buttons specific to event cards */
+.btn-ghost-danger {
+  color: #ef4444;
+  border-color: transparent;
+}
+
+.btn-ghost-danger:hover {
+  background: #fee2e2;
+}
+
+/* Responsive tweaks */
+@media (max-width: 640px) {
+  .events-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .event-card__actions {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+}
