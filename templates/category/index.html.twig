@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Catégories • Sanad Management{% endblock %}
+
+{% block body %}
+<div class="container" style="padding-top: var(--space-xl);">
+  <div class="page-intro" style="text-align: left; margin: 0 0 var(--space-lg) 0;">
+      <span class="page-label">Configuration</span>
+      <h1 class="h1-mega" style="font-size: 2.5rem;">Thématiques d'Impact</h1>
+      <p class="p-lead">Structurez vos causes par catégories pour faciliter la navigation des donateurs.</p>
+  </div>
+
+  {# Stats Row #}
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: var(--space-lg);">
+    <div class="glass-panel" style="padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+      <div style="width: 50px; height: 50px; border-radius: 12px; background: var(--bg-subtle); display: grid; place-items: center; color: var(--brand); font-size: 1.5rem;">
+        <i class="fa-solid fa-tags"></i>
+      </div>
+      <div>
+        <div style="font-size: 1.5rem; font-weight: 800; color: var(--text); line-height: 1;">{{ categories|length }}</div>
+        <div class="muted" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Total Catégories</div>
+      </div>
+    </div>
+
+    <div class="glass-panel" style="padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+      <div style="width: 50px; height: 50px; border-radius: 12px; background: var(--bg-subtle); display: grid; place-items: center; color: var(--accent); font-size: 1.5rem;">
+        <i class="fa-solid fa-bolt"></i>
+      </div>
+      <div>
+        <div style="font-size: 1.5rem; font-weight: 800; color: var(--text); line-height: 1;">Actif</div>
+        <div class="muted" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Mise à jour directe</div>
+      </div>
+    </div>
+  </div>
+
+  {# Toolbar #}
+  <div class="glass-panel animate-up" style="padding: 1rem 1.5rem; margin-bottom: var(--space-lg); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <form method="get" style="display:flex; gap:10px; align-items:center; flex-grow: 1; max-width: 500px;">
+        <div style="position: relative; flex-grow: 1;">
+          <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 14px; color: var(--muted);"></i>
+          <input class="form-input" name="q" value="{{ q }}" placeholder="Filtrer par nom ou slug..." style="padding-left: 45px; margin-bottom: 0;"/>
+        </div>
+        <button class="btn btn-primary btn-sm" type="submit">Rechercher</button>
+        {% if q %}
+          <a class="btn btn-sm" href="{{ path('category_index') }}">Effacer</a>
+        {% endif %}
+    </form>
+
+    <a class="btn btn-primary" href="{{ path('category_new') }}">
+      <i class="fa-solid fa-plus" style="margin-right: 8px;"></i> Nouvelle Catégorie
+    </a>
+  </div>
+
+  {# Categories Grid #}
+  <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; padding-bottom: var(--space-xl);">
+    {% for c in categories %}
+      <div class="glass-panel animate-up" style="display: flex; flex-direction: column; transition: var(--t);">
+        <div style="flex-grow: 1;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+            <div style="width: 44px; height: 44px; border-radius: 10px; background: var(--bg-subtle); display: grid; place-items: center; color: var(--brand);">
+              {% if c.icon %}<i class="fa-solid {{ c.icon }}"></i>{% else %}<i class="fa-solid fa-folder"></i>{% endif %}
+            </div>
+            <span class="muted" style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase;">ID: #{{ c.id }}</span>
+          </div>
+
+          <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text); margin-bottom: 0.5rem;">{{ c.name }}</h3>
+          <p class="muted" style="font-size: 0.875rem; margin-bottom: 1.5rem;">Slug: <code style="background: var(--bg-subtle); padding: 2px 6px; border-radius: 4px;">{{ c.slug }}</code></p>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+          <a class="btn btn-sm" href="{{ path('category_edit', {id: c.id}) }}" style="flex-grow: 1;">
+            <i class="fa-regular fa-pen-to-square"></i> Modifier
+          </a>
+          <form method="post" action="{{ path('category_delete', {id: c.id}) }}" onsubmit="return confirm('Confirmer la suppression ?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('del_cat_' ~ c.id) }}">
+            <button class="btn btn-sm" type="submit" style="color: #ef4444; border-color: transparent;">
+              <i class="fa-regular fa-trash-can"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    {% else %}
+      <div class="glass-panel" style="grid-column: 1 / -1; text-align: center; padding: var(--space-xl);">
+        <p class="p-lead">Aucune catégorie trouvée.</p>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

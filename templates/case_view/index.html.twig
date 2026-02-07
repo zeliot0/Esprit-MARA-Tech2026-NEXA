@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}CaseView index{% endblock %}
+
+{% block body %}
+    <h1>CaseView index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>IpHash</th>
+                <th>UserAgent</th>
+                <th>ViewedAt</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for case_view in case_views %}
+            <tr>
+                <td>{{ case_view.id }}</td>
+                <td>{{ case_view.ipHash }}</td>
+                <td>{{ case_view.userAgent }}</td>
+                <td>{{ case_view.viewedAt ? case_view.viewedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_case_view_show', {'id': case_view.id}) }}">show</a>
+                    <a href="{{ path('app_case_view_edit', {'id': case_view.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_case_view_new') }}">Create new</a>
+{% endblock %}

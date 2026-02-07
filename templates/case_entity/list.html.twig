@@ -1,0 +1,706 @@
+{# templates/case_entity/index.html.twig (مثال) #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Soutenir nos causes • Sanad{% endblock %}
+
+{% block body %}
+{# ================= DYNAMIC INSPIRATIONAL QUOTE (DONATORS) ================= #}
+{% if app.user and not is_granted('ROLE_ASSOCIATION') and not is_granted('ROLE_ADMIN') %}
+<div class="container" style="margin-top: 2rem; margin-bottom: 2rem;">
+    <div id="quoteDisplay" class="glass-panel animate-up" style="padding: 2.5rem; text-align: center; border-radius: var(--radius-2xl); background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(16, 185, 129, 0.08)); border: 1px dashed var(--brand-light); position: relative; overflow: hidden; min-height: 220px; display: flex; align-items: center; justify-content: center;">
+        <i class="fa-solid fa-quote-left" style="position: absolute; top: 20px; left: 30px; font-size: 3rem; opacity: 0.1; color: var(--brand);"></i>
+        
+        <div style="max-width: 800px; margin: 0 auto; width: 100%;">
+            <p id="quoteAr" dir="rtl" style="font-family: 'Outfit', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--text); margin-bottom: 1rem; line-height: 1.4; transition: opacity 0.5s ease;"></p>
+            <p id="quoteFr" style="font-style: italic; font-size: 1.1rem; color: var(--text-soft); font-weight: 600; transition: opacity 0.5s ease;"></p>
+            
+            <div style="margin-top: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 16px;">
+                <button id="speakAr" class="btn btn-sm btn-ghost" style="height: 40px; border-radius: var(--radius-full); padding: 0 16px; display: flex; align-items: center; gap: 8px; background: white; border: 1px solid var(--border);" title="Écouter en Arabe">
+                    <i class="fa-solid fa-volume-high" style="color: var(--brand);"></i> <span style="font-weight: 800; font-size: 0.75rem;">AR</span>
+                </button>
+                
+                <span class="badge badge-brand" style="padding: 8px 16px; border-radius: var(--radius-full); font-size: 0.75rem;"><i class="fa-solid fa-sparkles"></i> Inspiration</span>
+
+                <button id="speakFr" class="btn btn-sm btn-ghost" style="height: 40px; border-radius: var(--radius-full); padding: 0 16px; display: flex; align-items: center; gap: 8px; background: white; border: 1px solid var(--border);" title="Écouter en Français">
+                    <i class="fa-solid fa-volume-high" style="color: var(--brand);"></i> <span style="font-weight: 800; font-size: 0.75rem;">FR</span>
+                </button>
+            </div>
+        </div>
+
+        <i class="fa-solid fa-quote-right" style="position: absolute; bottom: 20px; right: 30px; font-size: 3rem; opacity: 0.1; color: var(--brand);"></i>
+        <div id="quoteProgress" style="position: absolute; bottom: 0; left: 0; height: 3px; background: var(--brand); width: 0%; transition: width linear;"></div>
+    </div>
+</div>
+{% endif %}
+
+{# ================= HERO SLIDER ================= #}
+<section class="hero-slider" id="heroSlider">
+
+  {# ✅ بدّل الروابط هاذم بصورك (assets) وقت تحب #}
+  {% set heroImages = [
+    asset('assets/image/im.jpeg'),
+  asset('assets/image/ima.jpeg'),
+    'https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=1600&q=80'
+  ] %}
+
+  <div class="hs-track" id="hsTrack">
+    {% for img in heroImages %}
+      <div class="hs-slide" style="background-image:url('{{ img }}')"></div>
+    {% endfor %}
+  </div>
+
+  <div class="hs-overlay"></div>
+
+  <div class="hs-content container">
+    <span class="page-label">Plateforme Solidaire</span>
+    <h1 class="h1-mega">
+      Chaque don <span class="text-gradient-teal">illumine</span> un avenir
+    </h1>
+    <p class="p-lead">
+      Découvrez, filtrez et soutenez les causes qui vous tiennent à cœur.
+    </p>
+  </div>
+
+  <button class="hs-arrow hs-prev" type="button" aria-label="Previous" id="hsPrev">‹</button>
+  <button class="hs-arrow hs-next" type="button" aria-label="Next" id="hsNext">›</button>
+
+  <div class="hs-dots" id="hsDots"></div>
+</section>
+
+{# ================= CATEGORY CHIPS ================= #}
+<div class="container" style="margin-bottom: 2rem; overflow-x: auto; white-space: nowrap; padding-bottom: 10px;">
+    <div style="display: flex; gap: 12px; align-items: center;">
+        <span style="font-weight: 800; color: var(--text-soft); margin-right: 12px; font-size: 0.9rem;">Catégories :</span>
+        <a href="{{ path('case_entity_consult') }}" 
+           class="acc-btn {{ not app.request.get('category') ? 'is-active' : '' }}" 
+           style="text-decoration: none; padding: 10px 20px; border-radius: var(--radius-full);">Tous</a>
+        
+        {% for category in categories %}
+            <a href="{{ path('case_entity_consult', {category: category.id}) }}" 
+               class="acc-btn {{ app.request.get('category') == category.id ? 'is-active' : '' }}" 
+               style="text-decoration: none; padding: 10px 20px; border-radius: var(--radius-full);">
+                {{ category.name }}
+            </a>
+        {% endfor %}
+    </div>
+</div>
+
+
+{# ================= IMPACT DASHBOARD ================= #}
+<div class="container" style="margin-bottom: 3rem;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem;">
+        
+        <div class="glass-panel" style="padding: 24px; text-align: center; border-radius: var(--radius-2xl); border-bottom: 4px solid #10b981;">
+            <div style="font-size: 2.5rem; font-weight: 900; color: var(--text); margin-bottom: 4px;" class="counter" data-target="12400">0</div>
+            <div style="font-size: 0.75rem; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 0.1em;">TND {{ 'common.collected'|trans }}</div>
+            <div style="font-size: 0.8rem; color: var(--muted); margin-top: 8px;">Générosité partagée</div>
+        </div>
+
+        <div class="glass-panel" style="padding: 24px; text-align: center; border-radius: var(--radius-2xl); border-bottom: 4px solid var(--brand);">
+            <div style="font-size: 2.5rem; font-weight: 900; color: var(--text); margin-bottom: 4px;" class="counter" data-target="{{ cases|length }}">0</div>
+            <div style="font-size: 0.75rem; font-weight: 800; color: var(--brand); text-transform: uppercase; letter-spacing: 0.1em;">{{ 'common.active_causes'|trans }}</div>
+            <div style="font-size: 0.8rem; color: var(--muted); margin-top: 8px;">En attente de soutien</div>
+        </div>
+
+        <div class="glass-panel" style="padding: 24px; text-align: center; border-radius: var(--radius-2xl); border-bottom: 4px solid #f59e0b;">
+            <div style="font-size: 2.5rem; font-weight: 900; color: var(--text); margin-bottom: 4px;" class="counter" data-target="842">0</div>
+            <div style="font-size: 0.75rem; font-weight: 800; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.1em;">{{ 'common.lives_impacted'|trans }}</div>
+            <div style="font-size: 0.8rem; color: var(--muted); margin-top: 8px;">Grâce à Sanad</div>
+        </div>
+
+    </div>
+</div>
+<div class="container" style="margin-bottom:3rem;">
+  <form method="get" class="glass-panel" style="padding: 1.25rem; border-radius: var(--radius-2xl);">
+    <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+      
+      {# Top Row: Prominent Search #}
+      <div style="display: flex; gap: 12px; align-items: stretch;">
+        <div style="position: relative; flex-grow: 1;">
+          <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 16px; top: 50%; translate: 0 -50%; color: var(--muted);"></i>
+          <input type="text" 
+                 name="q" 
+                 id="smartSearchInput" 
+                 value="{{ app.request.get('q') }}" 
+                 placeholder="{{ 'common.search_placeholder'|trans }}" 
+                 class="form-input" 
+                 style="padding-left: 48px; height: 56px; font-size: 1rem; border-radius: var(--radius-lg); background: var(--surface2);">
+        </div>
+        
+        <button type="button" id="aiSearchBtn" class="btn" style="background: var(--grad-premium); color: white; border: none; padding: 0 24px; border-radius: var(--radius-lg); font-weight: 800; display: flex; align-items: center; gap: 10px; transition: var(--t);">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> 
+            <span class="btn-text">{{ 'common.ai_assistant'|trans }}</span>
+        </button>
+      </div>
+
+      {# Bottom Row: Secondary Filters #}
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; align-items: center;">
+        <div style="position: relative;">
+          <i class="fa-solid fa-tags" style="position: absolute; left: 14px; top: 50%; translate: 0 -50%; color: var(--muted); font-size: 0.9rem;"></i>
+          <select name="category" class="form-input" style="padding-left: 40px; height: 48px; font-weight: 600; font-size: 0.9rem; border-radius: var(--radius-md); background: var(--surface2);">
+            <option value="">{{ 'common.all_categories'|trans }}</option>
+            {% for category in categories %}
+              <option value="{{ category.id }}" {{ category.id == app.request.get('category') ? 'selected' : '' }}>
+                {{ category.name }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div style="position: relative;">
+          <i class="fa-solid fa-arrow-down-wide-short" style="position: absolute; left: 14px; top: 50%; translate: 0 -50%; color: var(--muted); font-size: 0.9rem;"></i>
+          <select name="sort" class="form-input" style="padding-left: 40px; height: 48px; font-weight: 600; font-size: 0.9rem; border-radius: var(--radius-md); background: var(--surface2);">
+            <option value="recent" {{ app.request.get('sort') == 'recent' ? 'selected' : '' }}>{{ 'common.sort_recent'|trans }}</option>
+            <option value="urgent" {{ app.request.get('sort') == 'urgent' ? 'selected' : '' }}>{{ 'common.sort_urgent'|trans }}</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="height: 48px; border-radius: var(--radius-md); font-weight: 800; letter-spacing: 0.02em;">
+          <i class="fa-solid fa-filter" style="margin-right: 8px;"></i> {{ 'common.filter'|trans }}
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+{# ================= CASES GRID ================= #}
+<div class="container">
+  <div class="case-grid">
+
+    {% for case in cases %}
+
+      {% set isUrgent = case.isFeatured %}
+
+      <article class="case-card hover-glow {{ isUrgent ? 'case-urgent' : '' }}">
+
+        <div class="case-image-box">
+          {% if isUrgent %}
+            <span class="urgent-badge">URGENT</span>
+          {% endif %}
+          <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80"
+               alt="{{ case.title }}"
+               class="case-image">
+        </div>
+
+        <div class="case-body">
+          <span class="case-category">{{ case.category.name }}</span>
+
+          <h2 class="case-title">
+            {% if isUrgent %}
+              <i class="fa-solid fa-heart-pulse heartbeat" style="color: #e11d48; margin-right: 8px;"></i>
+            {% endif %}
+            {{ case.title }}
+          </h2>
+          <p class="case-summary">
+            {{ case.description|length > 120 ? case.description|slice(0,120) ~ '…' : case.description }}
+          </p>
+
+          {# 💰 Progression #}
+          {% set percent = 0 %}
+          {% if case.targetAmount and case.targetAmount > 0 %}
+            {% set percent = (case.currentAmount / case.targetAmount * 100)|round(0, 'floor') %}
+          {% endif %}
+
+          <div class="funding-progress-bar">
+            <div class="funding-progress-fill"
+                 style="width: {{ percent > 100 ? 100 : percent }}%;
+                        background: {{ isUrgent ? '#e11d48' : 'var(--brand)' }};">
+            </div>
+          </div>
+
+          <small class="muted">
+            {{ case.currentAmount }} TND /
+            {{ case.targetAmount ?? '∞' }} TND
+          </small>
+        </div>
+
+        <div class="case-meta-footer">
+          <div class="case-stats-row">
+            <span><i class="fa-regular fa-eye"></i> {{ case.viewsCount }}</span>
+            <span><i class="fa-solid fa-location-dot"></i> {{ case.location ?? 'Tunisie' }}</span>
+          </div>
+
+          <a href="{{ path('case_entity_show', {id: case.id}) }}"
+             class="btn {{ isUrgent ? 'btn-danger' : 'btn-success' }} btn-sm w-100">
+            👁️ Voir détails
+          </a>
+        </div>
+
+      </article>
+
+    {% else %}
+      <div class="glass-panel" style="grid-column:1/-1; text-align:center;">
+        <h3>Aucune cause trouvée</h3>
+        <p class="muted">Essayez de modifier vos filtres</p>
+      </div>
+    {% endfor %}
+
+  </div>
+</div>
+
+{# ================= WALL OF HOPE (SUCCESS STORIES) ================= #}
+<section class="container" style="margin-top: 6rem; margin-bottom: 6rem;">
+    <div style="text-align: center; margin-bottom: 3rem;">
+        <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 8px 20px; border-radius: var(--radius-full); font-weight: 800; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;">Réussites Sanad</span>
+        <h2 class="h2-premium" style="margin-top: 1rem;">Le Mur de l'Espoir</h2>
+        <p class="p-lead" style="max-width: 600px; margin: 1rem auto;">Ces vies ont été changées grâce à votre générosité. Chaque don est une victoire sur l'indifférence.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+        {# Story 1 #}
+        <div class="glass-panel" style="padding: 0; border-radius: var(--radius-2xl); overflow: hidden; display: flex; flex-direction: column;">
+            <div style="height: 200px; background: url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1000&auto=format&fit=crop') center/cover; filter: grayscale(100%); transition: var(--t);"></div>
+            <div style="padding: 24px; position: relative;">
+                <div style="width: 50px; height: 50px; background: var(--grad-premium); border-radius: 50%; display: grid; place-items: center; color: white; position: absolute; top: -25px; right: 24px; border: 4px solid var(--surface);">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h3 style="font-weight: 800; font-size: 1.1rem; margin-bottom: 8px;">Opération de Selim réussie</h3>
+                <p style="font-size: 0.9rem; color: var(--text-soft); line-height: 1.6;">"Grâce aux donateurs de Sanad, Selim a pu recevoir ses soins à temps. Il a retrouvé le sourire et l'espoir."</p>
+                <div style="margin-top: 16px; font-size: 0.75rem; font-weight: 700; color: var(--brand);">— Association Nour, Tunis</div>
+            </div>
+        </div>
+
+        {# Story 2 #}
+        <div class="glass-panel" style="padding: 0; border-radius: var(--radius-2xl); overflow: hidden; display: flex; flex-direction: column;">
+            <div style="height: 200px; background: url('https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=1000&auto=format&fit=crop') center/cover; filter: grayscale(100%); transition: var(--t);"></div>
+            <div style="padding: 24px; position: relative;">
+                <div style="width: 50px; height: 50px; background: var(--grad-premium); border-radius: 50%; display: grid; place-items: center; color: white; position: absolute; top: -25px; right: 24px; border: 4px solid var(--surface);">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h3 style="font-weight: 800; font-size: 1.1rem; margin-bottom: 8px;">Une école équipée au Kef</h3>
+                <p style="font-size: 0.9rem; color: var(--text-soft); line-height: 1.6;">"45 enfants ont désormais accès à des tablettes et des livres. Un pas géant pour l'éducation rurale."</p>
+                <div style="margin-top: 16px; font-size: 0.75rem; font-weight: 700; color: var(--brand);">— Fondation Espoir, Le Kef</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{# ================= STYLES (HERO + URGENT) ================= #}
+<style>
+/* ================= HERO SLIDER ================= */
+.hero-slider{
+  position: relative;
+  height: clamp(320px, 56vh, 560px);
+  border-radius: 22px;
+  overflow: hidden;
+  margin: 1.2rem auto 2rem;
+  box-shadow: 0 22px 70px rgba(0,0,0,.22);
+}
+
+.hs-track{
+  position:absolute;
+  inset:0;
+  display:flex;
+  transform: translateX(0);
+  transition: transform .7s cubic-bezier(.2,.8,.2,1);
+}
+
+.hs-slide{
+  min-width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.03);
+  filter: saturate(1.05) contrast(1.02);
+}
+
+.hs-overlay{
+  position:absolute;
+  inset:0;
+  background: linear-gradient(90deg,
+    rgba(10,15,30,.82) 0%,
+    rgba(10,15,30,.52) 45%,
+    rgba(10,15,30,.18) 100%);
+}
+
+.hs-content{
+  position:relative;
+  z-index:2;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:.8rem;
+  padding: clamp(22px, 4vw, 48px);
+  color:#fff;
+}
+
+.hero-slider .page-label{
+  display:inline-flex;
+  width: fit-content;
+  padding:.4rem .75rem;
+  border-radius:999px;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.18);
+  backdrop-filter: blur(10px);
+  font-weight:700;
+  letter-spacing:.3px;
+}
+
+.hero-slider .p-lead{
+  max-width: 52ch;
+  color: rgba(255,255,255,.9);
+}
+
+/* arrows */
+.hs-arrow{
+  position:absolute;
+  top:50%;
+  transform: translateY(-50%);
+  z-index:3;
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.22);
+  background: rgba(255,255,255,.10);
+  color:#fff;
+  font-size: 32px;
+  line-height: 40px;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  backdrop-filter: blur(10px);
+  transition: transform .2s ease, background .2s ease;
+}
+.hs-arrow:hover{ background: rgba(255,255,255,.18); transform: translateY(-50%) scale(1.05); }
+.hs-prev{ left: 14px; }
+.hs-next{ right: 14px; }
+
+/* dots */
+.hs-dots{
+  position:absolute;
+  left:50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  z-index:3;
+  display:flex;
+  gap:8px;
+  padding:8px 10px;
+  border-radius:999px;
+  background: rgba(0,0,0,.18);
+  border: 1px solid rgba(255,255,255,.12);
+  backdrop-filter: blur(10px);
+}
+.hs-dot{
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.45);
+  border: none;
+  cursor:pointer;
+}
+.hs-dot.is-active{
+  width: 22px;
+  background: rgba(255,255,255,.92);
+}
+
+/* responsive */
+@media (max-width: 640px){
+  .hs-content{ padding: 18px; }
+  .hs-arrow{ width: 40px; height: 40px; font-size: 28px; }
+  .hero-slider .h1-mega{ font-size: clamp(28px, 7vw, 44px); }
+}
+
+/* ================= URGENT STYLE ================= */
+.case-urgent {
+  border: 2px solid #e11d48;
+  box-shadow: 0 0 25px rgba(225, 29, 72, 0.35);
+  animation: urgentPulse 1.6s infinite;
+}
+
+.urgent-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #e11d48;
+  color: white;
+  font-weight: 800;
+  font-size: 0.75rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  letter-spacing: 1px;
+  animation: urgentPulse 1.6s infinite;
+}
+
+@keyframes urgentPulse {
+  0%   { box-shadow: 0 0 0 rgba(225,29,72,0.6); }
+  50%  { box-shadow: 0 0 25px rgba(225,29,72,0.9); }
+  100% { box-shadow: 0 0 0 rgba(225,29,72,0.6); }
+}
+
+.heartbeat {
+    animation: heartbeat 1.5s infinite;
+    display: inline-block;
+}
+
+@keyframes heartbeat {
+    0% { transform: scale(1); }
+    15% { transform: scale(1.3); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.15); }
+    60% { transform: scale(1); }
+}
+</style>
+
+
+{# ================= JS (AUTO SLIDER) ================= #}
+<script>
+(() => {
+  const track = document.getElementById("hsTrack");
+  const prevBtn = document.getElementById("hsPrev");
+  const nextBtn = document.getElementById("hsNext");
+  const dotsWrap = document.getElementById("hsDots");
+  if (!track) return;
+
+  const slides = Array.from(track.children);
+  const total = slides.length;
+  let i = 0;
+  let timer = null;
+
+  // build dots
+  const dots = slides.map((_, idx) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "hs-dot" + (idx === 0 ? " is-active" : "");
+    b.addEventListener("click", () => go(idx, true));
+    dotsWrap.appendChild(b);
+    return b;
+  });
+
+  function render(){
+    track.style.transform = `translateX(-${i * 100}%)`;
+    dots.forEach((d, idx) => d.classList.toggle("is-active", idx === i));
+  }
+
+  function go(nextIndex, userAction=false){
+    i = (nextIndex + total) % total;
+    render();
+    if (userAction) restart();
+  }
+
+  function next(){ go(i + 1); }
+  function prev(){ go(i - 1); }
+
+  function start(){
+    stop();
+    timer = setInterval(next, 4500);
+  }
+  function stop(){
+    if (timer) clearInterval(timer);
+    timer = null;
+  }
+  function restart(){ start(); }
+
+  nextBtn?.addEventListener("click", () => go(i + 1, true));
+  prevBtn?.addEventListener("click", () => go(i - 1, true));
+
+  // pause on hover
+  const hero = document.getElementById("heroSlider");
+  hero?.addEventListener("mouseenter", stop);
+  hero?.addEventListener("mouseleave", start);
+
+  // swipe (mobile)
+  let x0 = null;
+  hero?.addEventListener("touchstart", (e) => x0 = e.touches[0].clientX, {passive:true});
+  hero?.addEventListener("touchend", (e) => {
+    if (x0 === null) return;
+    const x1 = e.changedTouches[0].clientX;
+    const dx = x1 - x0;
+    if (Math.abs(dx) > 45) (dx < 0 ? go(i+1, true) : go(i-1, true));
+    x0 = null;
+  }, {passive:true});
+
+  // --- AI SMART SEARCH ---
+  const aiSearchBtn = document.getElementById('aiSearchBtn');
+  const smartSearchInput = document.getElementById('smartSearchInput');
+  const cards = document.querySelectorAll('.case-card');
+
+  if (aiSearchBtn) {
+    aiSearchBtn.addEventListener('click', () => {
+      const query = smartSearchInput.value.toLowerCase().trim();
+      if (!query) {
+          smartSearchInput.focus();
+          return;
+      }
+
+      // Simulation de traitement NLP (Dictionnaire de concepts)
+      const concepts = {
+          health: ['santé', 'médecine', 'médical', 'docteur', 'hôpital', 'maladie', 'opération', 'soins'],
+          education: ['école', 'études', 'élèves', 'enfants', 'éducation', 'clavier', 'livres', 'étudiant'],
+          location: ['tunis', 'sfax', 'sousse', 'kairouan', 'ariana', 'gabes', 'bizerte'],
+          urgency: ['urgent', 'immédiat', 'vitale', 'critique', 'danger', 'vite']
+      };
+
+      aiSearchBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Analyse...';
+      
+      setTimeout(() => {
+        cards.forEach(card => {
+          const text = card.innerText.toLowerCase();
+          const category = card.querySelector('.case-category').innerText.toLowerCase();
+          
+          let score = 0;
+          // Matching direct
+          if (text.includes(query)) score += 10;
+
+          // Matching par concept
+          for (const [key, words] of Object.entries(concepts)) {
+            if (query.includes(key) || words.some(w => query.includes(w))) {
+              if (words.some(w => text.includes(w)) || category.includes(key)) score += 5;
+            }
+          }
+
+          if (score > 0) {
+            card.style.display = 'flex';
+            card.style.opacity = '1';
+            card.animate([
+              { transform: 'scale(1)', boxShadow: 'none' },
+              { transform: 'scale(1.02)', boxShadow: '0 0 20px var(--brand)' },
+              { transform: 'scale(1)', boxShadow: 'none' }
+            ], { duration: 800 });
+          } else {
+            card.style.display = 'none';
+          }
+        });
+        
+        aiSearchBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Affiné !';
+      }, 600);
+    });
+  }
+
+  // Pre-load voices for some browsers
+  if ('speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+  }
+
+  // --- DYNAMIC QUOTES & VOCAL ---
+  const quotes = [
+      {ar: 'وَمَا تُقَدِّمُوا لِأَنفُسِكُم مِّنْ خَيْرٍ تَجِدُوهُ عِندَ اللَّهِ', fr: 'Tout bien que vous vous préparez, vous le retrouverez auprès d\'Allah.'},
+      {ar: 'لَن تَنَالُوا الْبِرَّ حَتَّىٰ تُنفِقُوا مِمَّا تُحِبُّونَ', fr: 'Vous n\'atteindriez la vraie piété que si vous faites largesses de ce que vous chérissez.'},
+      {ar: 'الَّذِينَ يُنْفِقُونَ أَمْوَالَهُمْ بِاللَّيْلِ وَالنَّهَارِ سِرًّا وَعَلَانِيَةً', fr: 'Ceux qui dépensent leurs biens, de nuit et de jour, en secret et en public.'},
+      {ar: 'الرَّاحِمُونَ يَرْحَمُهُمُ الرَّحْمَنُ', fr: 'Les miséricordieux, le Tout-Miséricordieux leur fera miséricorde.'},
+      {ar: 'اتَّقُوا النَّارَ وَلَوْ بِشِقِّ تَمْرَةٍ', fr: 'Prémunissez-vous contre le feu, ne serait-ce que par la moitié d\'une datte.'}
+  ];
+
+  const qAr = document.getElementById('quoteAr');
+  const qFr = document.getElementById('quoteFr');
+  const qProg = document.getElementById('quoteProgress');
+  const speakArBtn = document.getElementById('speakAr');
+  const speakFrBtn = document.getElementById('speakFr');
+  let currentIdx = 0;
+  const cycleTime = 10000; // 10 secondes
+
+  const updateQuote = () => {
+    if (!qAr || !qFr) return;
+    
+    qAr.style.opacity = '0';
+    qFr.style.opacity = '0';
+    qProg.style.transition = 'none';
+    qProg.style.width = '0%';
+    
+    setTimeout(() => {
+        const q = quotes[currentIdx];
+        qAr.innerText = q.ar;
+        qFr.innerText = `"${q.fr}"`;
+        
+        qAr.style.opacity = '1';
+        qFr.style.opacity = '1';
+        
+        setTimeout(() => {
+            qProg.style.transition = `width ${cycleTime}ms linear`;
+            qProg.style.width = '100%';
+        }, 50);
+
+        currentIdx = (currentIdx + 1) % quotes.length;
+    }, 500);
+  };
+
+  // Robust Voice Selection
+  let availableVoices = [];
+  const loadVoices = () => {
+    availableVoices = window.speechSynthesis.getVoices();
+  };
+  
+  if ('speechSynthesis' in window) {
+      loadVoices();
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+  }
+
+  const speak = (text, lang) => {
+      if (!('speechSynthesis' in window)) {
+          alert("Désolé, votre navigateur ne supporte pas la synthèse vocale.");
+          return;
+      }
+
+      const synth = window.speechSynthesis;
+      synth.cancel(); // Stop talking before starting
+      
+      const utter = new SpeechSynthesisUtterance(text);
+      
+      if (lang.startsWith('ar')) {
+          // Force detection on available voices
+          const arVoice = availableVoices.find(v => v.lang.toLowerCase().includes('ar'));
+          if (arVoice) {
+              utter.voice = arVoice;
+              utter.lang = arVoice.lang;
+          } else {
+              // High-level fallback for Arabic
+              utter.lang = 'ar-SA';
+          }
+      } else {
+          utter.lang = 'fr-FR';
+      }
+
+      utter.rate = 0.8; // Slower for clear diction
+      utter.pitch = 1;
+      utter.volume = 1;
+      
+      synth.speak(utter);
+  };
+
+  if (speakArBtn) {
+      speakArBtn.addEventListener('click', () => {
+          speak(qAr.innerText, 'ar-SA');
+          speakArBtn.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.1)' }, { transform: 'scale(1)' }], { duration: 300 });
+      });
+  }
+
+  if (speakFrBtn) {
+      speakFrBtn.addEventListener('click', () => {
+          speak(qFr.innerText, 'fr-FR');
+          speakFrBtn.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.1)' }, { transform: 'scale(1)' }], { duration: 300 });
+      });
+  }
+
+  if (qAr) {
+    updateQuote();
+    setInterval(updateQuote, cycleTime);
+  }
+
+  // --- ANIMATED COUNTERS ---
+  const counters = document.querySelectorAll('.counter');
+  const speed = 200;
+
+  counters.forEach(counter => {
+      const updateCount = () => {
+          const target = +counter.getAttribute('data-target');
+          const count = +counter.innerText;
+          const inc = target / speed;
+
+          if (count < target) {
+              counter.innerText = Math.ceil(count + inc);
+              setTimeout(updateCount, 1);
+          } else {
+              counter.innerText = target.toLocaleString();
+          }
+      };
+      updateCount();
+  });
+})();
+</script>
+
+{% endblock %}

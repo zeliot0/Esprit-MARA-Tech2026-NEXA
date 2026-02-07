@@ -1,0 +1,53 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Gestion des Catégories | Sanad Admin{% endblock %}
+{% block page_title %}Catégories{% endblock %}
+
+{% block body %}
+<div class="glass-panel" style="padding: 0; overflow: hidden;">
+    <div style="padding: 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="font-weight: 800; font-size: 1.1rem;">Liste des catégories</h3>
+        <a href="{{ path('admin_category_new') }}" class="btn btn-primary btn-sm">
+            <i class="fa-solid fa-plus" style="margin-right: 8px;"></i> Ajouter une catégorie
+        </a>
+    </div>
+    <div class="table-container" style="margin-top: 0; border: none; border-radius: 0;">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Slug</th>
+                    <th style="text-align: right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for category in categories %}
+                <tr>
+                    <td>#{{ category.id }}</td>
+                    <td style="font-weight: 600; color: var(--text);">{{ category.name }}</td>
+                    <td><code>{{ category.slug }}</code></td>
+                    <td style="text-align: right;">
+                        <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                            <a href="{{ path('admin_category_edit', {id: category.id}) }}" class="btn btn-sm" title="Modifier">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                            </a>
+                            <form method="post" action="{{ path('admin_category_delete', {id: category.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?');" style="display: inline-block;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
+                                <button class="btn btn-sm" style="color: #ef4444; border-color: transparent;">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" style="text-align: center; padding: 48px; color: var(--muted);">Aucune catégorie trouvée.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
