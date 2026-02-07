@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier l'événement • Aychek{% endblock %}
+
+{% block body %}
+<div class="container" style="padding-top: var(--space-xl); padding-bottom: var(--space-2xl);">
+    <div style="max-width: 800px; margin: 0 auto;">
+        <div class="animate-up" style="margin-bottom: var(--space-xl);">
+            <a href="{{ path('app_event_show', {'id': event.id}) }}" class="muted" style="text-decoration: none; font-size: 0.9rem; font-weight: 700;">
+                <i class="fa-solid fa-arrow-left"></i> Annuler les modifications
+            </a>
+            <h1 class="h1-mega" style="font-size: 2.5rem; margin-top: 15px;">Modifier l'Événement</h1>
+            <p class="p-lead">Mettez à jour les détails de votre action solidaire.</p>
+        </div>
+
+        <div class="glass-panel animate-up delay-1" style="padding: var(--space-xl);">
+            {{ form_start(form) }}
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                    <div class="form-field" style="grid-column: 1 / -1;">
+                        {{ form_label(form.title, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.title, {'attr': {'class': 'form-input'}}) }}
+                        {{ form_errors(form.title) }}
+                    </div>
+
+                    <div class="form-field">
+                        {{ form_label(form.startAt, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.startAt, {'attr': {'class': 'form-input'}}) }}
+                        {{ form_errors(form.startAt) }}
+                    </div>
+
+                    <div class="form-field">
+                        {{ form_label(form.endAt, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.endAt, {'attr': {'class': 'form-input'}}) }}
+                        {{ form_errors(form.endAt) }}
+                    </div>
+
+                    <div class="form-field" style="grid-column: 1 / -1;">
+                        {{ form_label(form.location, null, {'label_attr': {'class': 'form-label'}}) }}
+                        <div style="position: relative;">
+                            <i class="fa-solid fa-map-pin" style="position: absolute; left: 15px; top: 16px; color: var(--muted);"></i>
+                            {{ form_widget(form.location, {'attr': {'class': 'form-input', 'style': 'padding-left: 45px;'}}) }}
+                        </div>
+                        {{ form_errors(form.location) }}
+                    </div>
+
+                    <div class="form-field" style="grid-column: 1 / -1;">
+                        {{ form_label(form.description, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.description, {'attr': {'class': 'form-input', 'style': 'height: 150px; resize: none;'}}) }}
+                        {{ form_errors(form.description) }}
+                    </div>
+
+                    <div class="form-field">
+                        {{ form_label(form.status, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.status, {'attr': {'class': 'form-input'}}) }}
+                        {{ form_errors(form.status) }}
+                    </div>
+
+                    <div class="form-field">
+                        {{ form_label(form.imageFile, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.imageFile, {'attr': {'class': 'form-input'}}) }}
+                        {{ form_errors(form.imageFile) }}
+                        {% if event.image %}
+                            <div style="margin-top: 10px; font-size: 0.8rem; color: var(--brand);">Image actuelle : {{ event.image }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 15px;">
+                    <a href="{{ path('app_event_show', {'id': event.id}) }}" class="btn">Annuler</a>
+                    <button type="submit" class="btn btn-primary" style="padding: 12px 40px; border-radius: var(--radius-full); box-shadow: var(--shadow-lg);">
+                        <i class="fa-solid fa-save"></i> Enregistrer les modifications
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

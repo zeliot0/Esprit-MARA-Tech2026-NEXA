@@ -1,0 +1,131 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription | Aychek{% endblock %}
+
+{% block hide_nav %}{% endblock %}
+
+{% block body %}
+<div class="container" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: var(--space-lg) 0;">
+    <div class="glass-panel animate-up" style="width: 100%; max-width: 800px; padding: var(--space-xl); position: relative;">
+        
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <h1 style="font-size: 2.5rem; font-weight: 800; letter-spacing: -0.06em; color: var(--text);">Rejoignez l'aventure Aychek</h1>
+            <p style="color: var(--muted); font-size: 1.1rem; max-width: 500px; margin: 0.5rem auto;">Choisissez comment vous souhaitez contribuer à l'impact social.</p>
+        </div>
+
+        <form method="post" id="registerForm">
+            <!-- Creative Role Selector -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 3rem;">
+                <label class="role-card" style="cursor: pointer;">
+                    <input type="radio" name="role" value="DONOR" checked style="display: none;">
+                    <div class="role-card-inner">
+                        <div class="role-icon" style="background: rgba(13, 148, 136, 0.1); color: var(--brand);">
+                            <i class="fa-solid fa-hand-holding-heart"></i>
+                        </div>
+                        <h3 style="font-weight: 800; margin-bottom: 8px;">Donateur</h3>
+                        <p style="font-size: 0.875rem; color: var(--muted);">Je souhaite soutenir des causes et faire des dons.</p>
+                        <div class="role-check"><i class="fa-solid fa-circle-check"></i></div>
+                    </div>
+                </label>
+
+                <label class="role-card" style="cursor: pointer;">
+                    <input type="radio" name="role" value="ASSOCIATION" style="display: none;">
+                    <div class="role-card-inner">
+                        <div class="role-icon" style="background: rgba(99, 102, 241, 0.1); color: var(--accent);">
+                            <i class="fa-solid fa-building-ngo"></i>
+                        </div>
+                        <h3 style="font-weight: 800; margin-bottom: 8px;">Association</h3>
+                        <p style="font-size: 0.875rem; color: var(--muted);">Je représente une organisation et je lance des appels.</p>
+                        <div class="role-check"><i class="fa-solid fa-circle-check"></i></div>
+                    </div>
+                </label>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div class="form-field">
+                    <label class="form-label">Nom complet</label>
+                    <input type="text" name="fullName" class="form-input" required placeholder="Ex: Jean Dupont">
+                </div>
+                <div class="form-field">
+                    <label class="form-label">Email professionnel / personnel</label>
+                    <input type="email" name="email" class="form-input" required placeholder="nom@exemple.com">
+                </div>
+                <div class="form-field">
+                    <label class="form-label">Mot de passe</label>
+                    <input type="password" name="password" class="form-input" required placeholder="Minimum 8 caractères">
+                </div>
+                <div class="form-field">
+                    <label class="form-label">Confirmer le mot de passe</label>
+                    <input type="password" name="confirmPassword" class="form-input" required placeholder="••••••••">
+                </div>
+            </div>
+
+            <div style="margin: 24px 0;">
+                <label style="display: flex; gap: 12px; align-items: flex-start; cursor: pointer;">
+                    <input type="checkbox" required style="accent-color: var(--brand); width: 20px; height: 20px; margin-top: 4px;">
+                    <span style="font-size: 0.875rem; color: var(--text-soft); line-height: 1.5;">
+                        En continuant, vous acceptez nos <a href="#" style="color: var(--brand); font-weight: 700;">Conditions Générales</a> et notre Politique de Confidentialité.
+                    </span>
+                </label>
+            </div>
+
+            <button class="btn btn-primary" type="submit" style="width: 100%; height: 56px; font-size: 1.1rem; border-radius: var(--radius-lg);">
+                Créer mon compte <i class="fa-solid fa-rocket" style="margin-left: 10px;"></i>
+            </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);">
+            <p style="color: var(--muted);">Déjà inscrit ? <a href="{{ path('app_login') }}" style="color: var(--brand); font-weight: 700;">Se connecter</a></p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .role-card input:checked + .role-card-inner {
+        border-color: var(--brand);
+        background: rgba(13, 148, 136, 0.05);
+        box-shadow: 0 10px 25px -5px rgba(13, 148, 136, 0.15);
+        transform: translateY(-5px);
+    }
+
+    .role-card-inner {
+        padding: 32px 24px;
+        border: 2px solid var(--border);
+        border-radius: var(--radius-xl);
+        text-align: center;
+        transition: var(--t);
+        position: relative;
+    }
+
+    .role-card:hover .role-card-inner {
+        border-color: var(--brand-light);
+    }
+
+    .role-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: var(--radius-lg);
+        display: grid;
+        place-items: center;
+        margin: 0 auto 20px auto;
+        font-size: 1.75rem;
+        transition: var(--t);
+    }
+
+    .role-check {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        color: var(--brand);
+        font-size: 1.25rem;
+        opacity: 0;
+        transform: scale(0.5);
+        transition: var(--t);
+    }
+
+    .role-card input:checked + .role-card-inner .role-check {
+        opacity: 1;
+        transform: scale(1);
+    }
+</style>
+{% endblock %}

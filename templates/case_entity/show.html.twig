@@ -1,0 +1,254 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ case.title }} | Détail{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <style>
+        #map {
+            width: 100%;
+            height: 320px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-md);
+        }
+        .ai-scan-line {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.2), transparent);
+            animation: ai-scan 2s infinite;
+        }
+        @keyframes ai-scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--brand);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 0 rgba(99, 102, 241, 0.4);
+            animation: pulse-dot 1.5s infinite;
+        }
+        @keyframes pulse-dot {
+            0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container" style="padding: var(--space-xl) 0;">
+    <div class="glass-panel animate-up" style="margin-bottom: var(--space-lg); display: flex; justify-content: space-between; align-items: flex-end;">
+        <div>
+            <p class="page-label">Fiche cas</p>
+            <h1 class="h1-mega" style="margin-bottom: 0.5rem;">{{ case.title }}</h1>
+            <p class="p-lead" style="margin: 0;">{{ case.description }}</p>
+        </div>
+        <div id="aiImpactBadge" class="glass-panel" style="background: rgba(99, 102, 241, 0.05); padding: 14px 22px; border-radius: var(--radius-2xl); border: 1px solid rgba(99, 102, 241, 0.2); display: none; position: relative; overflow: hidden; box-shadow: 0 8px 32px rgba(99, 102, 241, 0.1);">
+            <div class="ai-scan-line"></div>
+            <div style="font-size: 0.65rem; font-weight: 800; color: var(--brand); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.1em; display: flex; align-items: center; gap: 6px;">
+                <span class="pulse-dot"></span> Analyse Smart Aychek
+            </div>
+            <div id="aiAnalysisText" style="font-weight: 800; font-size: 1rem; color: var(--text); display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 0.8rem; opacity: 0.5;"></i> Calcul du score...
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-panel animate-up delay-1" style="margin-bottom: var(--space-lg); display:grid; grid-template-columns: 1.5fr 1fr; gap: var(--space-lg); align-items:start;">
+        <div>
+            <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom: var(--space-md);">
+                <span class="badge badge-info">{{ case.category.name|default('Catégorie') }}</span>
+                <span class="badge badge-brand">{{ case.urgency|upper }}</span>
+                <span class="badge">{{ case.status|upper }}</span>
+            </div>
+            <dl style="display:grid; grid-template-columns: 140px 1fr; row-gap:10px; column-gap:12px; color: var(--text-soft);">
+                <dt>Localisation</dt><dd>{{ case.location|default('Non renseignée') }}</dd>
+                <dt>Objectif</dt><dd>{{ case.targetAmount|number_format(0, '.', ' ') }} TND</dd>
+                <dt>Collecté</dt><dd>{{ case.currentAmount|number_format(0, '.', ' ') }} TND</dd>
+                <dt>Vues</dt><dd>{{ case.viewsCount }}</dd>
+                <dt>Créé le</dt><dd>{{ case.createdAt ? case.createdAt|date('d M Y H:i') : '—' }}</dd>
+                <dt>Publié le</dt><dd>{{ case.publishedAt ? case.publishedAt|date('d M Y H:i') : '—' }}</dd>
+            </dl>
+            
+            {# --- SECTION: UPDATES (TRAVAIL DE L'ASSOCIATION) --- #}
+            <div style="margin-top: 48px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <h3 style="font-weight: 900; font-size: 1.25rem;"><i class="fa-solid fa-list-check" style="color: var(--brand);"></i> Suivi des Travaux</h3>
+                    {% if app.user == case.createdBy or is_granted('ROLE_ADMIN') %}
+                        <button class="btn btn-sm btn-ghost" onclick="document.getElementById('updateForm').style.display = 'block'"><i class="fa-solid fa-plus"></i> Ajouter une preuve</button>
+                    {% endif %}
+                </div>
+
+                <div id="updateForm" class="glass-panel" style="display: none; padding: 20px; margin-bottom: 32px; border: 1px dashed var(--brand);">
+                    <form action="{{ path('app_case_add_update', {id: case.id}) }}" method="POST">
+                        <textarea name="content" class="form-input" placeholder="Décrivez l'avancement des travaux..." required style="height: 100px; margin-bottom: 12px;"></textarea>
+                        <input type="url" name="image_url" class="form-input" placeholder="URL d'une image de preuve (optionnel)" style="margin-bottom: 16px;">
+                        <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                            <button type="button" class="btn btn-sm btn-ghost" onclick="document.getElementById('updateForm').style.display = 'none'">Annuler</button>
+                            <button type="submit" class="btn btn-sm btn-primary">Publier le rapport</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="timeline" style="position: relative; padding-left: 32px;">
+                    <div style="position: absolute; left: 7px; top: 0; bottom: 0; width: 2px; background: var(--border);"></div>
+                    {% for update in case.updates|sort((a, b) => b.createdAt <=> a.createdAt) %}
+                        <div style="position: relative; margin-bottom: 32px;">
+                            <div style="position: absolute; left: -32px; top: 0; width: 16px; height: 16px; border-radius: 50%; background: var(--brand); border: 4px solid var(--surface); box-shadow: 0 0 0 2px var(--brand);"></div>
+                            <div class="glass-panel" style="padding: 20px; border-radius: var(--radius-lg);">
+                                <div style="font-size: 0.75rem; font-weight: 800; color: var(--muted); margin-bottom: 8px; text-transform: uppercase;">
+                                    Rapport du {{ update.createdAt|date('d/m/Y') }}
+                                </div>
+                                <p style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 16px;">{{ update.content }}</p>
+                                {% if update.image %}
+                                    <img src="{{ update.image }}" style="width: 100%; border-radius: 8px; margin-top: 8px; box-shadow: var(--shadow-sm);">
+                                {% endif %}
+                                <div style="margin-top: 12px; font-size: 0.75rem; font-weight: 700; color: var(--brand);">
+                                    <i class="fa-solid fa-circle-check"></i> Preuve validée par {{ case.createdBy.fullName }}
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <p class="muted">Aucune mise à jour publiée pour le moment.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div style="margin-top: var(--space-md); display: flex; gap: 12px; flex-wrap: wrap;">
+                <a class="btn btn-ghost" href="{{ case.cha9a9aUrl }}" target="_blank" rel="noopener">
+                    <i class="fa-solid fa-file-shield"></i> Voir le dossier initial
+                </a>
+                <a class="btn" href="{{ path('case_entity_consult') }}">Retour</a>
+            </div>
+        </div>
+        
+        <aside>
+            <div id="map" style="margin-bottom: 32px;"></div>
+            
+            {# --- SECTION: DONATIONS & SUPPORT --- #}
+            <div class="glass-panel" style="padding: var(--space-md); border-radius: var(--radius-lg); background: var(--bg-subtle); border: 1px solid var(--border); margin-bottom: 32px;">
+                <h4 style="margin-bottom: 12px; font-size: 1rem; font-weight: 800;"><i class="fa-solid fa-heart-pulse" style="color: #ef4444;"></i> Soutenir cette cause</h4>
+                <form action="{{ path('app_donate', {id: case.id}) }}" method="POST" style="display: flex; gap: 8px;">
+                    <div style="position: relative; flex-grow: 1;">
+                        <span style="position: absolute; left: 12px; top: 10px; font-weight: 800; color: var(--muted);">TND</span>
+                        <input type="number" name="amount" placeholder="Montant" min="1" step="1" required 
+                               style="width: 100%; padding: 10px 10px 10px 45px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--surface); font-weight: 800;">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="background: #ef4444; border-color: #ef4444; white-space: nowrap;">
+                        <i class="fa-brands fa-stripe"></i> Donner
+                    </button>
+                </form>
+                <p style="margin-top: 8px; font-size: 0.75rem; color: var(--muted); font-weight: 600;">Paiement sécurisé via Aychek Gateway</p>
+            </div>
+
+            {# --- SECTION: COMMENTS --- #}
+            <div class="glass-panel" style="padding: 24px;">
+                <h3 style="font-weight: 900; font-size: 1.1rem; margin-bottom: 24px;"><i class="fa-solid fa-comments" style="color: var(--brand);"></i> Messages de soutien</h3>
+                
+                <div style="margin-bottom: 32px;">
+                    {% if app.user %}
+                        <form action="{{ path('app_case_add_comment', {id: case.id}) }}" method="POST">
+                            <textarea name="content" class="form-input" placeholder="Laissez un message d'espoir..." required style="height: 80px; margin-bottom: 12px; font-size: 0.9rem;"></textarea>
+                            <button type="submit" class="btn btn-sm btn-primary" style="width: 100%;">Envoyer mon message</button>
+                        </form>
+                    {% else %}
+                        <div style="padding: 16px; background: var(--bg-subtle); border-radius: 8px; text-align: center;">
+                            <p style="font-size: 0.85rem; font-weight: 600; margin-bottom: 8px;">Connectez-vous pour laisser un message</p>
+                            <a href="{{ path('app_login') }}" class="btn btn-sm btn-ghost">Connexion</a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    {% for comment in case.comments|sort((a, b) => b.createdAt <=> a.createdAt) %}
+                        <div style="display: flex; gap: 12px;">
+                            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--grad-premium); flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 0.7rem;">
+                                {{ comment.author.fullName|slice(0, 1)|upper }}
+                            </div>
+                            <div style="background: var(--surface2); padding: 12px 16px; border-radius: 16px; border-top-left-radius: 4px;">
+                                <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 4px;">
+                                    <span style="font-weight: 800; font-size: 0.85rem;">{{ comment.author.fullName }}</span>
+                                    <span style="font-size: 0.65rem; color: var(--muted);">{{ comment.createdAt|date('d/m H:i') }}</span>
+                                </div>
+                                <p style="font-size: 0.85rem; margin: 0; line-height: 1.4;">{{ comment.content }}</p>
+                            </div>
+                        </div>
+                    {% else %}
+                        <p class="muted" style="text-align: center; font-size: 0.85rem;">Soyez le premier à soutenir cette cause.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mapEl = document.getElementById('map');
+            if (!mapEl) return;
+
+            const fallback = { lat: 33.8869, lon: 9.5375, zoom: 6 }; // Tunisia center
+            const locationText = "{{ case.location|e('js') }}";
+
+            const map = L.map('map', { zoomControl: true }).setView([fallback.lat, fallback.lon], fallback.zoom);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap'
+            }).addTo(map);
+
+            if (locationText) {
+                fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(locationText), {
+                    headers: { 'Accept-Language': 'fr' }
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data && data.length) {
+                        const { lat, lon, display_name } = data[0];
+                        const coords = [parseFloat(lat), parseFloat(lon)];
+                        map.setView(coords, 12);
+                        L.marker(coords).addTo(map).bindPopup(display_name || locationText);
+                    }
+                })
+                .catch(() => {
+                    // keep fallback
+                });
+            }
+        });
+
+        // --- AI SENTIMENT ANALYSIS ---
+        const aiBadge = document.getElementById('aiImpactBadge');
+        const aiText = document.getElementById('aiAnalysisText');
+        const description = document.querySelector('.p-lead').innerText.toLowerCase();
+
+        if (aiBadge) {
+            setTimeout(() => {
+                aiBadge.style.display = 'block';
+                aiBadge.classList.add('animate-up');
+                
+                let sentiment = "🕊️ Impact Humanitaire";
+                if (description.includes('urgent') || description.includes('grave') || description.includes('danger')) {
+                    sentiment = "🚑 Alerte Critique";
+                } else if (description.includes('enfant') || description.includes('orphelin') || description.includes('école')) {
+                    sentiment = "🧸 Avenir Enfant";
+                } else if (description.includes('maladie') || description.includes('opération') || description.includes('soins')) {
+                    sentiment = "🔬 Médical Vital";
+                }
+                
+                aiText.innerHTML = sentiment;
+            }, 1000);
+        }
+    </script>
+{% endblock %}

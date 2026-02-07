@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}" data-theme="light" dir="{{ app.request.locale == 'ar' ? 'rtl' : 'ltr' }}">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aychek – Plateforme Numérique Solidaire</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root { --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-rgb: 255, 255, 255;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: rgba(16, 185, 129, 0.12);
+      --primary: #10b981;
+      --primary-dark: #059669;
+      --accent: #06b6d4;
+      --gradient: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+      --shadow-sm: 0 4px 16px rgba(0,0,0,0.08);
+      --shadow-md: 0 12px 40px rgba(16, 185, 129, 0.15);
+      --shadow-lg: 0 20px 60px rgba(0,0,0,0.12);
+    }
+
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-rgb: 30, 41, 59;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --border: rgba(16, 185, 129, 0.12);
+      --primary: #10b981;
+      --primary-dark: #059669;
+      --accent: #06b6d4;
+      --gradient: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+      --shadow-sm: 0 4px 12px rgba(0,0,0,0.35);
+      --shadow-md: 0 12px 32px rgba(16, 185, 129, 0.30);
+      --shadow-lg: 0 22px 70px rgba(0,0,0,0.35);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      transition: background 0.5s ease, color 0.5s ease;
+      overflow-x: hidden;
+    }
+
+    /* =========================
+       HEADER (NAVBAR)
+       ========================= */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 80px;
+      background: rgba(var(--surface-rgb), 0.92);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6%;
+      z-index: 1000;
+      transition: var(--transition);
+    }
+
+    .logo {
+      font-size: 2.1rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      user-select: none;
+      text-decoration: none;
+    }
+    .logo i {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      margin: 0 10px;
+      font-weight: 700;
+      transition: var(--transition);
+      padding: 10px 10px;
+      border-radius: 12px;
+    }
+    nav a:hover {
+      color: var(--primary);
+      background: rgba(16,185,129,.08);
+    }
+
+    .nav-tools{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-left: 8px;
+      padding-left: 12px;
+      border-left: 1px solid var(--border);
+    }
+
+    .lang-select{
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background: rgba(var(--surface-rgb), .8);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 38px 10px 12px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      outline: none;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+    }
+    .lang-wrap{
+      position: relative;
+    }
+    .lang-wrap::after{
+      content:"\f0d7";
+      font-family:"Font Awesome 6 Free";
+      font-weight:900;
+      position:absolute;
+      right: 12px;
+      top:50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events:none;
+      font-size: .95rem;
+    }
+    .lang-select:hover{
+      border-color: rgba(16,185,129,.35);
+      transform: translateY(-1px);
+    }
+
+    .theme-toggle {
+      background: rgba(var(--surface-rgb), .6);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size: 1.15rem;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+    .theme-toggle:hover {
+      color: var(--primary);
+      transform: rotate(10deg) translateY(-1px);
+      border-color: rgba(16,185,129,.35);
+    }
+
+    /* =========================
+       BANNER UNDER NAVBAR
+       ========================= */
+    .top-banner {
+      position: fixed;
+      top: 80px;
+      left: 0;
+      right: 0;
+      height: 44px;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      background: linear-gradient(90deg, rgba(16,185,129,.10), rgba(6,182,212,.10));
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(14px);
+      overflow: hidden;
+    }
+
+    .top-banner::before,
+    .top-banner::after{
+      content:"";
+      position:absolute;
+      top:0; bottom:0;
+      width: 70px;
+      z-index: 2;
+      pointer-events:none;
+    }
+    .top-banner::before{
+      left:0;
+      background: linear-gradient(90deg, rgba(var(--surface-rgb), .95), rgba(var(--surface-rgb), 0));
+    }
+    .top-banner::after{
+      right:0;
+      background: linear-gradient(270deg, rgba(var(--surface-rgb), .95), rgba(var(--surface-rgb), 0));
+    }
+
+    .banner-track{
+      display:flex;
+      align-items:center;
+      gap: 34px;
+      width: max-content;
+      padding-left: 24px;
+      animation: marquee 18s linear infinite;
+      will-change: transform;
+    }
+    .top-banner:hover .banner-track{ animation-play-state: paused; }
+
+    .banner-item{
+      display:inline-flex;
+      align-items:center;
+      gap: 12px;
+      font-weight: 900;
+      letter-spacing: .4px;
+      white-space: nowrap;
+      font-size: .98rem;
+      color: var(--text);
+      opacity: .95;
+    }
+    .banner-item .pill{
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(16,185,129,.12);
+      border: 1px solid rgba(16,185,129,.22);
+      color: var(--primary-dark);
+      font-weight: 900;
+      font-size: .86rem;
+    }
+
+    /* Simple flag (inline CSS) */
+    .flag-pal{
+      width: 18px;
+      height: 12px;
+      border-radius: 2px;
+      border: 1px solid rgba(0,0,0,.08);
+      background:
+        linear-gradient(to bottom,
+          #000 0 33%,
+          #fff 33% 66%,
+          #0a8f3e 66% 100%);
+      position: relative;
+      box-shadow: 0 4px 10px rgba(0,0,0,.08);
+    }
+    .flag-pal::before{
+      content:"";
+      position:absolute;
+      left:-1px;
+      top:-1px;
+      width:0; height:0;
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+      border-left: 10px solid #d10f2f;
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .banner-track{ animation: none; }
+    }
+
+    /* =========================
+       ANIMATIONS
+       ========================= */
+    .hero, .mission, .categories, .how-it-works, .impact, .cta-final {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .hero.visible, .mission.visible, .categories.visible, .how-it-works.visible, .impact.visible, .cta-final.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* =========================
+       HERO
+       ========================= */
+    .hero {
+      /* header (80) + banner (44) + spacing */
+      padding: 200px 6% 140px;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 5vw, 4.8rem);
+      font-weight: 900;
+      line-height: 1.08;
+      margin: 0 0 22px;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero .tagline {
+      font-size: 1.25rem;
+      color: var(--primary);
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: 0.3px;
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(16,185,129,.10);
+      border: 1px solid rgba(16,185,129,.18);
+    }
+
+    .hero p {
+      font-size: 1.18rem;
+      color: var(--muted);
+      max-width: 760px;
+      margin: 0 auto 46px;
+      line-height: 1.7;
+    }
+
+    .hero-ctas {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    /* BUTTONS */
+    .cta-primary, .cta-secondary {
+      padding: 16px 40px;
+      border-radius: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 1.03rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .cta-primary {
+      background: var(--gradient);
+      color: white;
+      border: none;
+      box-shadow: 0 10px 28px rgba(16, 185, 129, 0.25);
+    }
+    .cta-primary:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 18px 55px rgba(16, 185, 129, 0.38);
+    }
+    .cta-secondary {
+      background: rgba(var(--surface-rgb), .55);
+      border: 1px solid rgba(16,185,129,.30);
+      color: var(--primary-dark);
+      box-shadow: var(--shadow-sm);
+    }
+    .cta-secondary:hover {
+      background: rgba(16,185,129,.12);
+      border-color: rgba(16,185,129,.55);
+      transform: translateY(-2px);
+    }
+
+    /* SECTIONS */
+    .section-title {
+      font-size: clamp(2.2rem, 3.5vw, 3.2rem);
+      font-weight: 900;
+      margin: 0 0 14px;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      letter-spacing: -0.6px;
+    }
+    .section-subtitle {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 720px;
+      margin: 0 auto 60px;
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    /* MISSION */
+    .mission {
+      background: rgba(var(--surface-rgb), 0.55);
+      padding: 100px 6%;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+
+    .mission-content {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .mission-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      margin-top: 50px;
+    }
+
+    .stat-card {
+      background: rgba(var(--surface-rgb), 0.8);
+      padding: 30px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      transition: var(--transition);
+    }
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(16,185,129,.45);
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 900;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    /* CATEGORIES */
+    .categories { padding: 100px 6%; }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .category-card {
+      background: rgba(var(--surface-rgb), 0.7);
+      border-radius: 22px;
+      padding: 40px 30px;
+      border: 1px solid var(--border);
+      transition: var(--transition);
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .category-card:hover {
+      transform: translateY(-10px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(16,185,129,.45);
+    }
+
+    .category-icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      transition: var(--transition);
+    }
+
+    .category-card:hover .category-icon { transform: scale(1.15); }
+
+    .category-title {
+      font-weight: 900;
+      font-size: 1.25rem;
+      margin: 0 0 12px;
+      color: var(--text);
+    }
+
+    .category-desc {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* HOW IT WORKS */
+    .how-it-works {
+      background: rgba(var(--surface-rgb), 0.55);
+      padding: 100px 6%;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .steps-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+    }
+
+    .step { text-align: center; }
+
+    .step-number {
+      width: 70px;
+      height: 70px;
+      background: var(--gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 900;
+      color: white;
+      margin: 0 auto 24px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .step-title {
+      font-size: 1.15rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    .step-desc {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* IMPACT */
+    .impact { padding: 100px 6%; }
+
+    .impact-content {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .impact-quote {
+      font-size: 1.35rem;
+      font-style: italic;
+      color: var(--text);
+      line-height: 1.8;
+      margin: 40px 0;
+      padding: 40px;
+      background: rgba(var(--surface-rgb), 0.7);
+      border-radius: 20px;
+      border-left: 4px solid var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .impact-author {
+      font-size: 1.05rem;
+      color: var(--primary);
+      font-weight: 800;
+      font-style: normal;
+      margin-top: 18px;
+    }
+
+    /* CTA FINAL */
+    .cta-final {
+      background: var(--gradient);
+      padding: 100px 6%;
+      text-align: center;
+      color: white;
+    }
+
+    .cta-final h2 {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 900;
+      margin: 0 0 20px;
+      color: white;
+    }
+
+    .cta-final p {
+      font-size: 1.15rem;
+      max-width: 700px;
+      margin: 0 auto 40px;
+      opacity: 0.95;
+      line-height: 1.7;
+    }
+
+    .cta-final .cta-primary {
+      background: white;
+      color: var(--primary);
+      padding: 18px 50px;
+      font-size: 1.1rem;
+      box-shadow: 0 10px 34px rgba(0,0,0,0.22);
+    }
+
+    /* FOOTER */
+    footer {
+      background: rgba(var(--surface-rgb), 0.55);
+      padding: 50px 6%;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 700;
+      transition: var(--transition);
+    }
+    .footer-links a:hover { color: var(--primary); }
+
+    footer p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin: 10px 0 0;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav a { display:none; } /* simple: cache liens sur mobile */
+      .nav-tools { border-left: none; padding-left: 0; }
+    }
+
+    @media (max-width: 768px) {
+      header { padding: 0 4%; height: 70px; }
+      .top-banner { top: 70px; height: 42px; }
+      .logo { font-size: 1.6rem; }
+      .hero { padding: 185px 4% 100px; }
+      .hero h1 { font-size: 2.2rem; }
+      .hero .tagline { font-size: 1.02rem; }
+      .hero p { font-size: 1rem; }
+      .section-title { font-size: 2rem; }
+      .section-subtitle { font-size: 1rem; }
+      .categories-grid, .steps-container { grid-template-columns: 1fr; gap: 20px; }
+      .mission-stats { grid-template-columns: repeat(2, 1fr); }
+      .lang-select{ padding: 10px 34px 10px 12px; }
+    }
+
+    /* RTL (Arabic) tweaks */
+    html[dir="rtl"] body { font-family: 'Inter', system-ui, sans-serif; }
+    html[dir="rtl"] nav { direction: rtl; }
+    html[dir="rtl"] .nav-tools { direction: rtl; }
+  </style>
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <header>
+    <a href="{{ path('app_home') }}" class="logo">
+      <i class="fa-solid fa-hands-holding-circle"></i>
+      Aychek
+    </a>
+
+    <nav>
+      <a href="#mission" data-i18n="nav_mission">Mission</a>
+      <a href="#categories" data-i18n="nav_categories">Catégories</a>
+      <a href="#comment" data-i18n="nav_how">Comment ça marche</a>
+      <a href="#impact" data-i18n="nav_impact">Impact</a>
+
+      <div class="nav-tools">
+        <div class="lang-wrap" title="Language">
+          <select class="lang-select" id="langSelect" aria-label="Choisir la langue" onchange="window.location.href='/change-locale/'+this.value">
+            <option value="fr" {{ app.request.locale == 'fr' ? 'selected' : '' }}>FR</option>
+            <option value="en" {{ app.request.locale == 'en' ? 'selected' : '' }}>EN</option>
+            <option value="ar" {{ app.request.locale == 'ar' ? 'selected' : '' }}>AR</option>
+          </select>
+        </div>
+
+        <button class="theme-toggle" id="themeToggle" aria-label="Changer de thème">
+          <i class="fas fa-sun"></i>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- BANNER UNDER NAVBAR -->
+  <div class="top-banner" role="region" aria-label="Message défilant">
+    <div class="banner-track" id="bannerTrack">
+      <div class="banner-item"><span class="flag-pal" aria-hidden="true"></span> <span class="pill" data-i18n="b1a">Stand for</span> <span data-i18n="b1b">Freedom</span> • <span data-i18n="b1c">Justice</span> • <span data-i18n="b1d">Dignity</span> • <span data-i18n="b1e">Humanity</span></div>
+      <div class="banner-item"><span class="flag-pal" aria-hidden="true"></span> <span class="pill" data-i18n="b1a">Stand for</span> <span data-i18n="b1b">Freedom</span> • <span data-i18n="b1c">Justice</span> • <span data-i18n="b1d">Dignity</span> • <span data-i18n="b1e">Humanity</span></div>
+      <div class="banner-item"><span class="flag-pal" aria-hidden="true"></span> <span class="pill" data-i18n="b1a">Stand for</span> <span data-i18n="b1b">Freedom</span> • <span data-i18n="b1c">Justice</span> • <span data-i18n="b1d">Dignity</span> • <span data-i18n="b1e">Humanity</span></div>
+      <div class="banner-item"><span class="flag-pal" aria-hidden="true"></span> <span class="pill" data-i18n="b1a">Stand for</span> <span data-i18n="b1b">Freedom</span> • <span data-i18n="b1c">Justice</span> • <span data-i18n="b1d">Dignity</span> • <span data-i18n="b1e">Humanity</span></div>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="tagline" data-i18n="tagline">🤝 Ensemble pour un monde meilleur</div>
+    <h1 data-i18n="hero_title">Donnez de la visibilité<br>à l'invisible</h1>
+    <p data-i18n="hero_desc">
+      Aychek est la plateforme qui connecte les cœurs généreux aux personnes dans le besoin.
+      Chaque don compte, chaque geste sauve une vie.
+    </p>
+    <div class="hero-ctas">
+      <a href="{{ path('case_entity_consult') }}" class="cta-primary">
+        <i class="fa-solid fa-heart"></i> <span data-i18n="cta_donate">Faire un don maintenant</span>
+      </a>
+      <a href="{{ path('case_entity_consult') }}" class="cta-secondary">
+        <i class="fa-solid fa-hand-holding-heart"></i> <span data-i18n="cta_discover">Découvrir les cas</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="mission" id="mission">
+    <h2 class="section-title" data-i18n="mission_title">Notre Mission</h2>
+    <p class="section-subtitle" data-i18n="mission_sub">
+      Nous luttons chaque jour pour donner une voix aux invisibles et créer un pont de confiance
+      entre ceux qui ont besoin d'aide et ceux qui veulent aider.
+    </p>
+
+    <div class="mission-content">
+      <div class="mission-stats">
+        <div class="stat-card">
+          <div class="stat-number">300K+</div>
+          <div class="stat-label" data-i18n="stat1">Bénéficiaires</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">44</div>
+          <div class="stat-label" data-i18n="stat2">Membres Actifs</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">100%</div>
+          <div class="stat-label" data-i18n="stat3">Transparence</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">2021</div>
+          <div class="stat-label" data-i18n="stat4">Année de création</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="categories" id="categories">
+    <h2 class="section-title" data-i18n="cat_title">Catégories d'aide</h2>
+    <p class="section-subtitle" data-i18n="cat_sub">
+      Explorez les différentes causes que nous soutenons et trouvez celle qui touche votre cœur
+    </p>
+    <div class="categories-grid">
+      <div class="category-card" onclick="window.location.href='{{ path('case_entity_consult') }}'">
+        <div class="category-icon">🏥</div>
+        <h3 class="category-title" data-i18n="c1t">Santé</h3>
+        <p class="category-desc" data-i18n="c1d">Soins médicaux urgents, traitements, et opérations vitales</p>
+      </div>
+      <div class="category-card" onclick="window.location.href='{{ path('case_entity_consult') }}'">
+        <div class="category-icon">♿</div>
+        <h3 class="category-title" data-i18n="c2t">Handicap</h3>
+        <p class="category-desc" data-i18n="c2d">Équipements, assistance et inclusion des personnes handicapées</p>
+      </div>
+      <div class="category-card" onclick="window.location.href='{{ path('case_entity_consult') }}'">
+        <div class="category-icon">👶</div>
+        <h3 class="category-title" data-i18n="c3t">Enfants</h3>
+        <p class="category-desc" data-i18n="c3d">Protection, nutrition et bien-être des enfants démunis</p>
+      </div>
+      <div class="category-card" onclick="window.location.href='{{ path('case_entity_consult') }}'">
+        <div class="category-icon">📚</div>
+        <h3 class="category-title" data-i18n="c4t">Éducation</h3>
+        <p class="category-desc" data-i18n="c4d">Fournitures scolaires, bourses et accès à l'apprentissage</p>
+      </div>
+      <div class="category-card" onclick="window.location.href='{{ path('case_entity_consult') }}'">
+        <div class="category-icon">🏠</div>
+        <h3 class="category-title" data-i18n="c5t">Rénovation</h3>
+        <p class="category-desc" data-i18n="c5d">Réhabilitation de logements pour familles nécessiteuses</p>
+      </div>
+      <div class="category-card" onclick="window.location.href='{{ path('case_entity_consult') }}'">
+        <div class="category-icon">👴</div>
+        <h3 class="category-title" data-i18n="c6t">Personnes Âgées</h3>
+        <p class="category-desc" data-i18n="c6d">Soins et accompagnement des seniors abandonnés</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="how-it-works" id="comment">
+    <h2 class="section-title" data-i18n="how_title">Comment ça marche ?</h2>
+    <p class="section-subtitle" data-i18n="how_sub">
+      Un processus simple et transparent pour maximiser votre impact
+    </p>
+    <div class="steps-container">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3 class="step-title" data-i18n="s1t">Découvrez</h3>
+        <p class="step-desc" data-i18n="s1d">Parcourez les cas sociaux classés par catégories et urgence</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3 class="step-title" data-i18n="s2t">Choisissez</h3>
+        <p class="step-desc" data-i18n="s2d">Sélectionnez la cause qui touche votre cœur et lisez l'histoire complète</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3 class="step-title" data-i18n="s3t">Donnez</h3>
+        <p class="step-desc" data-i18n="s3d">Contribuez en toute sécurité via Cha9a9a en un seul clic</p>
+      </div>
+      <div class="step">
+        <div class="step-number">4</div>
+        <h3 class="step-title" data-i18n="s4t">Suivez</h3>
+        <p class="step-desc" data-i18n="s4d">Recevez des mises à jour sur l'impact de votre générosité</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="impact" id="impact">
+    <h2 class="section-title" data-i18n="impact_title">Votre Impact</h2>
+    <p class="section-subtitle" data-i18n="impact_sub">
+      Chaque contribution transforme des vies et redonne espoir
+    </p>
+    <div class="impact-content">
+      <div class="impact-quote" data-i18n="quote">
+        "Votre code peut changer des vies. Chaque ligne que vous écrivez donne de la visibilité
+        à une personne oubliée. Chaque fonctionnalité redonne confiance à un donateur."
+        <div class="impact-author">— Association UniVersElle Ariana</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-final">
+    <h2 data-i18n="final_title">Prêt à faire la différence ?</h2>
+    <p data-i18n="final_sub">
+      Rejoignez notre communauté de donateurs et associations qui changent des vies chaque jour.
+      Ensemble, donnons une voix aux invisibles.
+    </p>
+    <a href="{{ path('app_register') }}" class="cta-primary">
+      <i class="fa-solid fa-rocket"></i> <span data-i18n="final_btn">Commencer maintenant</span>
+    </a>
+  </section>
+
+  <footer>
+    <div class="footer-links">
+      <a href="#" data-i18n="f_about">À propos</a>
+      <a href="#" data-i18n="f_contact">Contact</a>
+      <a href="#" data-i18n="f_privacy">Confidentialité</a>
+      <a href="#" data-i18n="f_terms">Conditions</a>
+      <a href="#"><i class="fab fa-facebook"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-linkedin"></i></a>
+    </div>
+    <p>© 2026 Aychek – Plateforme Numérique Solidaire • Association UniVersElle Ariana</p>
+    <p style="margin-top: 8px; font-size: 0.85rem;">
+      <i class="fa-solid fa-phone"></i> 95403001 •
+      <i class="fa-solid fa-envelope"></i> universellecelluleariana@gmail.com
+    </p>
+  </footer>
+
+  <script>
+    // =========================
+    // THEME TOGGLE
+    // =========================
+    const toggleBtn = document.getElementById('themeToggle');
+    const html = document.documentElement;
+
+    function applyTheme(theme){
+      html.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+      toggleBtn.innerHTML = theme === 'dark'
+        ? '<i class="fas fa-moon"></i>'
+        : '<i class="fas fa-sun"></i>';
+    }
+
+    applyTheme(localStorage.getItem('theme') || 'light');
+
+    toggleBtn.addEventListener('click', () => {
+      const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      applyTheme(newTheme);
+    });
+
+    // =========================
+    // FADE-IN ON SCROLL
+    // =========================
+    const fadeElements = document.querySelectorAll('.hero, .mission, .categories, .how-it-works, .impact, .cta-final');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    fadeElements.forEach(el => observer.observe(el));
+
+    // =========================
+    // SMOOTH SCROLL
+    // =========================
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    // =========================
+    // BANNER: DUPLICATE CONTENT FOR PERFECT LOOP
+    // =========================
+    const track = document.getElementById('bannerTrack');
+    track.innerHTML = track.innerHTML + track.innerHTML;
+
+    // =========================
+    // i18n (FR / EN / AR)
+    // =========================
+    const dict = {
+      fr: {
+        nav_mission: "Mission",
+        nav_categories: "Catégories",
+        nav_how: "Comment ça marche",
+        nav_impact: "Impact",
+        tagline: "🤝 Ensemble pour un monde meilleur",
+        hero_title: "Donnez de la visibilité<br>à l'invisible",
+        hero_desc: "Aychek est la plateforme qui connecte les cœurs généreux aux personnes dans le besoin. Chaque don compte, chaque geste sauve une vie.",
+        cta_donate: "Faire un don maintenant",
+        cta_discover: "Découvrir les cas",
+
+        mission_title: "Notre Mission",
+        mission_sub: "Nous luttons chaque jour pour donner une voix aux invisibles et créer un pont de confiance entre ceux qui ont besoin d'aide et ceux qui veulent aider.",
+        stat1: "Bénéficiaires",
+        stat2: "Membres Actifs",
+        stat3: "Transparence",
+        stat4: "Année de création",
+
+        cat_title: "Catégories d'aide",
+        cat_sub: "Explorez les différentes causes que nous soutenons et trouvez celle qui touche votre cœur",
+        c1t:"Santé", c1d:"Soins médicaux urgents, traitements, et opérations vitales",
+        c2t:"Handicap", c2d:"Équipements, assistance et inclusion des personnes handicapées",
+        c3t:"Enfants", c3d:"Protection, nutrition et bien-être des enfants démunis",
+        c4t:"Éducation", c4d:"Fournitures scolaires, bourses et accès à l'apprentissage",
+        c5t:"Rénovation", c5d:"Réhabilitation de logements pour familles nécessiteuses",
+        c6t:"Personnes Âgées", c6d:"Soins et accompagnement des seniors abandonnés",
+
+        how_title:"Comment ça marche ?",
+        how_sub:"Un processus simple et transparent pour maximiser votre impact",
+        s1t:"Découvrez", s1d:"Parcourez les cas sociaux classés par catégories et urgence",
+        s2t:"Choisissez", s2d:"Sélectionnez la cause qui touche votre cœur et lisez l'histoire complète",
+        s3t:"Donnez", s3d:"Contribuez en toute sécurité via Cha9a9a en un seul clic",
+        s4t:"Suivez", s4d:"Recevez des mises à jour sur l'impact de votre générosité",
+
+        impact_title:"Votre Impact",
+        impact_sub:"Chaque contribution transforme des vies et redonne espoir",
+        quote:"\"Votre code peut changer des vies. Chaque ligne que vous écrivez donne de la visibilité à une personne oubliée. Chaque fonctionnalité redonne confiance à un donateur.\"",
+
+        final_title:"Prêt à faire la différence ?",
+        final_sub:"Rejoignez notre communauté de donateurs et associations qui changent des vies chaque jour. Ensemble, donnons une voix aux invisibles.",
+        final_btn:"Commencer maintenant",
+
+        f_about:"À propos", f_contact:"Contact", f_privacy:"Confidentialité", f_terms:"Conditions",
+
+        b1a:"Stand for", b1b:"Freedom", b1c:"Justice", b1d:"Dignity", b1e:"Humanity"
+      },
+
+      en: {
+        nav_mission: "Mission",
+        nav_categories: "Categories",
+        nav_how: "How it works",
+        nav_impact: "Impact",
+        tagline: "🤝 Together for a better world",
+        hero_title: "Give visibility<br>to the unseen",
+        hero_desc: "Aychek connects generous hearts with people in need. Every donation counts—every gesture saves a life.",
+        cta_donate: "Donate now",
+        cta_discover: "Discover cases",
+
+        mission_title: "Our Mission",
+        mission_sub: "We work every day to give a voice to the unseen and build trust between those who need help and those who want to help.",
+        stat1: "Beneficiaries",
+        stat2: "Active Members",
+        stat3: "Transparency",
+        stat4: "Founded",
+
+        cat_title: "Aid Categories",
+        cat_sub: "Explore the causes we support and choose the one that touches your heart",
+        c1t:"Health", c1d:"Urgent medical care, treatments, and life-saving surgeries",
+        c2t:"Disability", c2d:"Equipment, assistance and inclusion for people with disabilities",
+        c3t:"Children", c3d:"Protection, nutrition and wellbeing for vulnerable children",
+        c4t:"Education", c4d:"School supplies, scholarships and learning access",
+        c5t:"Renovation", c5d:"Home rehabilitation for families in need",
+        c6t:"Elders", c6d:"Care and support for abandoned seniors",
+
+        how_title:"How does it work?",
+        how_sub:"A simple and transparent process to maximize your impact",
+        s1t:"Explore", s1d:"Browse cases by category and urgency",
+        s2t:"Choose", s2d:"Pick a cause and read the full story",
+        s3t:"Donate", s3d:"Contribute safely in one click",
+        s4t:"Follow", s4d:"Receive updates on your impact",
+
+        impact_title:"Your Impact",
+        impact_sub:"Every contribution changes lives and restores hope",
+        quote:"\"Your code can change lives. Every line you write gives visibility to someone forgotten. Every feature rebuilds donor trust.\"",
+
+        final_title:"Ready to make a difference?",
+        final_sub:"Join our community of donors and associations changing lives every day. Together, we give a voice to the unseen.",
+        final_btn:"Get started",
+
+        f_about:"About", f_contact:"Contact", f_privacy:"Privacy", f_terms:"Terms",
+
+        b1a:"Stand for", b1b:"Freedom", b1c:"Justice", b1d:"Dignity", b1e:"Humanity"
+      },
+
+      ar: {
+        nav_mission: "المهمة",
+        nav_categories: "الفئات",
+        nav_how: "كيف تعمل",
+        nav_impact: "الأثر",
+        tagline: "🤝 معًا من أجل عالم أفضل",
+        hero_title: "امنح رؤيةً<br>لغير المرئي",
+        hero_desc: "Aychek منصة تربط القلوب الكريمة بمن يحتاجون للمساعدة. كل تبرع يصنع فرقًا—وكل خطوة تنقذ حياة.",
+        cta_donate: "تبرّع الآن",
+        cta_discover: "اكتشف الحالات",
+
+        mission_title: "مهمّتنا",
+        mission_sub: "نعمل يوميًا لإعطاء صوت لمن لا يُسمَع وبناء جسر ثقة بين من يحتاجون للمساعدة ومن يريدون تقديمها.",
+        stat1: "مستفيدون",
+        stat2: "أعضاء نشطون",
+        stat3: "شفافية",
+        stat4: "سنة التأسيس",
+
+        cat_title: "فئات المساعدة",
+        cat_sub: "استكشف القضايا التي ندعمها واختر ما يلامس قلبك",
+        c1t:"الصحة", c1d:"علاج عاجل، أدوية، وعمليات منقذة للحياة",
+        c2t:"الإعاقة", c2d:"معدات، دعم وإدماج للأشخاص ذوي الإعاقة",
+        c3t:"الأطفال", c3d:"حماية، تغذية ورفاه للأطفال المحتاجين",
+        c4t:"التعليم", c4d:"لوازم مدرسية، منح ودعم للتعلّم",
+        c5t:"الترميم", c5d:"ترميم مساكن لعائلات بحاجة",
+        c6t:"كبار السن", c6d:"رعاية ومرافقة لكبار السن",
+
+        how_title:"كيف تعمل المنصة؟",
+        how_sub:"خطوات بسيطة وشفافة لتعظيم الأثر",
+        s1t:"تصفّح", s1d:"تصفّح الحالات حسب الفئة والأولوية",
+        s2t:"اختر", s2d:"اختر القضية واقرأ القصة كاملة",
+        s3t:"تبرّع", s3d:"تبرّع بأمان بخطوة واحدة",
+        s4t:"تابع", s4d:"احصل على تحديثات حول الأثر",
+
+        impact_title:"أثرك",
+        impact_sub:"كل مساهمة تغيّر حياة وتعيد الأمل",
+        quote:"\"يمكن لبرمجتك أن تغيّر حياة. كل سطر تكتبه يمنح رؤية لمن تم نسيانه. وكل ميزة تعزّز ثقة المتبرعين.\"",
+
+        final_title:"جاهز لصناعة الفرق؟",
+        final_sub:"انضم إلى مجتمعنا من المتبرعين والجمعيات التي تغيّر الحياة يوميًا. معًا نمنح صوتًا لمن لا يُسمَع.",
+        final_btn:"ابدأ الآن",
+
+        f_about:"من نحن", f_contact:"اتصال", f_privacy:"الخصوصية", f_terms:"الشروط",
+
+        b1a:"قف من أجل", b1b:"الحرية", b1c:"العدالة", b1d:"الكرامة", b1e:"الإنسانية"
+      }
+    };
+
+    function applyLang(code){
+      const pack = dict[code] || dict.fr;
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if(pack[key] !== undefined){
+          el.innerHTML = pack[key];
+        }
+      });
+      document.documentElement.lang = code;
+      document.documentElement.dir = (code === 'ar') ? 'rtl' : 'ltr';
+      localStorage.setItem("lang", code);
+    }
+
+    const savedLang = "{{ app.request.locale }}";
+    document.getElementById("langSelect").value = savedLang;
+    applyLang(savedLang);
+  </script>
+</body>
+</html>

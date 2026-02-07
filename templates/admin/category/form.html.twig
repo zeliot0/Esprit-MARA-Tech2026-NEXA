@@ -1,0 +1,29 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ category.id ? 'Modifier' : 'D' }} la catégorie | Aychek Admin{% endblock %}
+{% block page_title %}{{ category.id ? 'Modifier la catégorie: ' ~ category.name : 'Nouvelle catégorie' }}{% endblock %}
+
+{% block body %}
+<div class="glass-panel" style="max-width: 800px;">
+    {{ form_start(form) }}
+        <div class="form-field">
+            {{ form_label(form.name, 'Nom de la catégorie', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.name, {'attr': {'class': 'form-input', 'placeholder': 'Ex: Santé, Éducation...'}}) }}
+            {{ form_errors(form.name) }}
+        </div>
+        
+        <div class="form-field">
+            {{ form_label(form.slug, 'Slug (Optionnel)', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.slug, {'attr': {'class': 'form-input', 'placeholder': 'ex: sante'}}) }}
+            {{ form_errors(form.slug) }}
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 32px;">
+            <button class="btn btn-primary" type="submit">
+                <i class="fa-solid fa-save" style="margin-right: 8px;"></i> Enregistrer
+            </button>
+            <a href="{{ path('admin_category_index') }}" class="btn">Annuler</a>
+        </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

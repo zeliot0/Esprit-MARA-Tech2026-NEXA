@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin | Aychek{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/aychek-ui.css') }}">
+    
+    <style>
+        :root {
+            --sidebar-width: 280px;
+        }
+
+        body {
+            background-color: var(--bg-subtle);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .admin-sidebar {
+            width: var(--sidebar-width);
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            transition: var(--t);
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-nav {
+            padding: 24px 16px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--text-soft);
+            font-weight: 600;
+            margin-bottom: 4px;
+            transition: var(--t-fast);
+        }
+
+        .sidebar-link:hover, .sidebar-link.active {
+            background: var(--surface2);
+            color: var(--brand);
+        }
+
+        .sidebar-link.active {
+            background: rgba(13, 148, 136, 0.1);
+        }
+
+        .sidebar-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .admin-main {
+            flex-grow: 1;
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            width: calc(100% - var(--sidebar-width));
+        }
+
+        .admin-topbar {
+            height: 72px;
+            background: var(--surface-glaze);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .admin-content {
+            padding: 32px;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: var(--t);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--brand);
+        }
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-lg);
+            background: var(--surface2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--brand);
+        }
+
+        .stat-info .stat-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--text);
+            line-height: 1.2;
+        }
+
+        .stat-info .stat-label {
+            font-size: 0.875rem;
+            color: var(--muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .table-container {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            margin-top: 24px;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .admin-table th {
+            text-align: left;
+            padding: 16px 24px;
+            background: var(--bg-subtle);
+            color: var(--muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 800;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .admin-table td {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-soft);
+            font-size: 0.9375rem;
+        }
+
+        .admin-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-success { background: #dcfce7; color: #166534; }
+        .badge-warning { background: #fef9c3; color: #854d0e; }
+        .badge-danger { background: #fee2e2; color: #991b1b; }
+        .badge-info { background: #e0f2fe; color: #075985; }
+
+        @media (max-width: 1024px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+            }
+            .admin-main {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+    </style>
+    {% block stylesheets %}{% endblock %}
+</head>
+<body class="theme-light">
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <a class="brand" href="{{ path('admin_dashboard') }}">
+                <span class="brand-badge"><i class="fa-solid fa-gauge-high"></i></span>
+                <span class="brand-name">Aychek Admin</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            {% set route = app.request.attributes.get('_route') %}
+            <a href="{{ path('admin_dashboard') }}" class="sidebar-link {{ route == 'admin_dashboard' ? 'active' : '' }}">
+                <i class="fa-solid fa-chart-pie"></i>
+                Dashboard
+            </a>
+            <a href="{{ path('admin_case_index') }}" class="sidebar-link {{ route starts with 'admin_case' ? 'active' : '' }}">
+                <i class="fa-solid fa-hand-holding-heart"></i>
+                Appels d'Offres
+            </a>
+            <a href="{{ path('admin_category_index') }}" class="sidebar-link {{ route starts with 'admin_category' ? 'active' : '' }}">
+                <i class="fa-solid fa-tags"></i>
+                Catégories
+            </a>
+            <a href="{{ path('admin_blog_index') }}" class="sidebar-link {{ route starts with 'admin_blog' ? 'active' : '' }}">
+                <i class="fa-solid fa-feather-pointed"></i>
+                Journal (Blog)
+            </a>
+            <a href="{{ path('admin_user_index') }}" class="sidebar-link {{ route == 'admin_user_index' ? 'active' : '' }}">
+                <i class="fa-solid fa-users"></i>
+                Utilisateurs
+            </a>
+            <a href="{{ path('admin_donation_index') }}" class="sidebar-link {{ route == 'admin_donation_index' ? 'active' : '' }}">
+                <i class="fa-solid fa-money-bill-transfer"></i>
+                Donations
+            </a>
+            <a href="{{ path('admin_audit_logs') }}" class="sidebar-link {{ route == 'admin_audit_logs' ? 'active' : '' }}">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                Logs d'Audit
+            </a>
+            <div style="margin-top: 32px; padding: 0 16px; font-size: 0.75rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em;">Système</div>
+            <a href="#" class="sidebar-link">
+                <i class="fa-solid fa-gear"></i>
+                Paramètres
+            </a>
+            <a href="{{ path('case_entity_consult') }}" class="sidebar-link">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                Voir le site
+            </a>
+        </nav>
+        <div style="padding: 24px; border-top: 1px solid var(--border);">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--grad-premium); display: flex; align-items: center; justify-content: center; color: white;">A</div>
+                <div>
+                    <div style="font-weight: 700; font-size: 0.875rem;">Administrateur</div>
+                    <div style="font-size: 0.75rem; color: var(--muted);">admin@Aychek.tn</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        <header class="admin-topbar">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <h2 style="font-size: 1.25rem; font-weight: 800;">{% block page_title %}Dashboard{% endblock %}</h2>
+            </div>
+            <div style="display: flex; align-items: center; gap: 24px;">
+                <div style="position: relative;">
+                    <i class="fa-regular fa-bell" style="font-size: 1.25rem; color: var(--text-soft);"></i>
+                    <span style="position: absolute; top: -4px; right: -4px; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; border: 2px solid white;"></span>
+                </div>
+                <button id="themeToggle" class="btn btn-ghost" style="border: none; background: transparent; font-size: 1.25rem;"><i class="fa-regular fa-moon"></i></button>
+            </div>
+        </header>
+
+        <section class="admin-content">
+            {% block body %}{% endblock %}
+        </section>
+    </main>
+
+    <script src="{{ asset('assets/aychek-ui.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {% block javascripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,90 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Moniteur des Donations | Aychek{% endblock %}
+{% block page_title %}Donations{% endblock %}
+
+{% block body %}
+<div class="glass-panel" style="padding: 24px; border-radius: var(--radius-xl); margin-bottom: 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h3 style="font-weight: 800; margin-bottom: 4px;">Flux des Donations</h3>
+            <p class="muted">Visualisez toutes les contributions et leur statut en temps réel.</p>
+        </div>
+        <div style="display: flex; gap: 12px;">
+            <div style="position: relative;">
+                <i class="fa-solid fa-search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted);"></i>
+                <input type="text" id="donationSearch" class="form-input" placeholder="Rechercher un donateur ou une cause..." style="padding-left: 40px; border-radius: var(--radius-md); height: 44px; width: 320px;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="table-container">
+    <table class="admin-table" id="donationsTable">
+        <thead>
+            <tr>
+                <th>Donation ID</th>
+                <th>Donateur</th>
+                <th>Cause / Appel</th>
+                <th>Montant</th>
+                <th>Statut</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for donation in donations %}
+            <tr>
+                <td style="font-weight: 700; color: var(--brand);">#DON-{{ donation.id }}</td>
+                <td>
+                    {% if donation.donor %}
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; color: var(--brand);">
+                                {{ donation.donor.fullName|slice(0, 1)|upper }}
+                            </div>
+                            <span>{{ donation.donor.fullName }}</span>
+                        </div>
+                    {% else %}
+                        {{ donation.donorName ?? 'Anonyme' }} 
+                        <br><small class="muted">{{ donation.donorEmail }}</small>
+                    {% endif %}
+                </td>
+                <td>
+                    <div style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ donation.case.title }}">
+                        {{ donation.case.title }}
+                    </div>
+                </td>
+                <td style="font-weight: 800; color: var(--text);">{{ donation.amount }} {{ donation.currency }}</td>
+                <td>
+                    {% if donation.status == 'COMPLETED' or donation.status == 'PAID' %}
+                        <span class="badge badge-success">Payé</span>
+                    {% elseif donation.status == 'PENDING' %}
+                        <span class="badge badge-warning">En attente</span>
+                    {% else %}
+                        <span class="badge badge-info">{{ donation.status }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ donation.createdAt|date('d/m/Y H:i') }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 48px; color: var(--muted);">Aucune donation enregistrée.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    document.getElementById('donationSearch').addEventListener('keyup', function() {
+        const value = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#donationsTable tbody tr');
+        
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            row.style.display = text.includes(value) ? '' : 'none';
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Gestion des Utilisateurs | Aychek{% endblock %}
+{% block page_title %}Utilisateurs{% endblock %}
+
+{% block body %}
+<div class="glass-panel" style="padding: 24px; border-radius: var(--radius-xl); margin-bottom: 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h3 style="font-weight: 800; margin-bottom: 4px;">Liste des Utilisateurs</h3>
+            <p class="muted">Gérez les accès et les statuts des utilisateurs de la plateforme.</p>
+        </div>
+        <div style="display: flex; gap: 12px;">
+            <div style="position: relative;">
+                <i class="fa-solid fa-search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted);"></i>
+                <input type="text" id="userSearch" class="form-input" placeholder="Rechercher..." style="padding-left: 40px; border-radius: var(--radius-md); height: 44px; width: 260px;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="table-container">
+    <table class="admin-table" id="usersTable">
+        <thead>
+            <tr>
+                <th>Utilisateur</th>
+                <th>Email</th>
+                <th>Rôle</th>
+                <th>Statut</th>
+                <th>Créé le</th>
+                <th style="text-align: right;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--brand);">
+                            {{ user.fullName|slice(0, 1)|upper }}
+                        </div>
+                        <span style="font-weight: 700;">{{ user.fullName }}</span>
+                    </div>
+                </td>
+                <td>{{ user.email }}</td>
+                <td>
+                    {% if user.role == 'ROLE_ADMIN' %}
+                        <span class="badge badge-danger">Admin</span>
+                    {% elseif user.role == 'ROLE_ASSOCIATION' %}
+                        <span class="badge badge-info">Association</span>
+                    {% else %}
+                        <span class="badge badge-success">Donateur</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if user.isActive %}
+                        <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">Actif</span>
+                    {% else %}
+                        <span class="badge" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">Banni</span>
+                    {% endif %}
+                </td>
+                <td>{{ user.createdAt|date('d/m/Y H:i') }}</td>
+                <td style="text-align: right;">
+                    <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                        <form action="{{ path('admin_user_toggle_active', {id: user.id}) }}" method="POST" style="display: inline;">
+                            {% if user.isActive %}
+                                <button type="submit" class="btn btn-sm" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2);" onclick="return confirm('Voulez-vous vraiment bannir cet utilisateur ?')">
+                                    <i class="fa-solid fa-user-slash"></i>
+                                </button>
+                            {% else %}
+                                <button type="submit" class="btn btn-sm" style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2);">
+                                    <i class="fa-solid fa-user-check"></i>
+                                </button>
+                            {% endif %}
+                        </form>
+                        <a href="#" class="btn btn-sm btn-ghost"><i class="fa-solid fa-eye"></i></a>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 48px; color: var(--muted);">Aucun utilisateur trouvé.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    document.getElementById('userSearch').addEventListener('keyup', function() {
+        const value = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#usersTable tbody tr');
+        
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            row.style.display = text.includes(value) ? '' : 'none';
+        });
+    });
+</script>
+{% endblock %}

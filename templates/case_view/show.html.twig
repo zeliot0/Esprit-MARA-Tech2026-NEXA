@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}CaseView{% endblock %}
+
+{% block body %}
+    <h1>CaseView</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ case_view.id }}</td>
+            </tr>
+            <tr>
+                <th>IpHash</th>
+                <td>{{ case_view.ipHash }}</td>
+            </tr>
+            <tr>
+                <th>UserAgent</th>
+                <td>{{ case_view.userAgent }}</td>
+            </tr>
+            <tr>
+                <th>ViewedAt</th>
+                <td>{{ case_view.viewedAt ? case_view.viewedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_case_view_index') }}">back to list</a>
+
+    <a href="{{ path('app_case_view_edit', {'id': case_view.id}) }}">edit</a>
+
+    {{ include('case_view/_delete_form.html.twig') }}
+{% endblock %}

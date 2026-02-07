@@ -1,0 +1,202 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de Bord Association | Aychek{% endblock %}
+
+{% block body %}
+<div class="container" style="padding-top: var(--space-xl); padding-bottom: var(--space-2xl);">
+    
+    {# Header Section #}
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: var(--space-xl);" class="animate-up">
+        <div>
+            <span class="page-label">Workspace Professionnel</span>
+            <h1 class="h1-mega" style="font-size: 2.5rem; margin-bottom: 0.5rem;">Bonjour, {{ app.user.fullName }} 👋</h1>
+            <p class="p-lead" style="font-size: 1.1rem;">Voici un aperçu de l'impact de votre association aujourd'hui.</p>
+        </div>
+        <div style="display: flex; gap: 12px;">
+            <a href="{{ path('case_entity_index') }}" class="btn btn-primary" style="border-radius: var(--radius-full);">
+                <i class="fa-solid fa-plus-circle"></i> Nouvel Appel
+            </a>
+        </div>
+    </div>
+
+    {# Stats Grid #}
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-lg); margin-bottom: var(--space-xl);" class="animate-up delay-1">
+        <div class="glass-panel" style="padding: var(--space-lg); display: flex; align-items: center; gap: 20px;">
+            <div style="width: 60px; height: 60px; border-radius: var(--radius-lg); background: rgba(13, 148, 136, 0.1); color: var(--brand); display: grid; place-items: center; font-size: 1.5rem;">
+                <i class="fa-solid fa-bullhorn"></i>
+            </div>
+            <div>
+                <div style="font-size: 1.75rem; font-weight: 800; color: var(--text);">{{ totalCases }}</div>
+                <div style="font-size: 0.8rem; font-weight: 700; color: var(--muted); text-transform: uppercase;">Total Appels</div>
+            </div>
+        </div>
+
+        <div class="glass-panel" style="padding: var(--space-lg); display: flex; align-items: center; gap: 20px;">
+            <div style="width: 60px; height: 60px; border-radius: var(--radius-lg); background: rgba(99, 102, 241, 0.1); color: var(--accent); display: grid; place-items: center; font-size: 1.5rem;">
+                <i class="fa-solid fa-hand-holding-dollar"></i>
+            </div>
+            <div>
+                <div style="font-size: 1.75rem; font-weight: 800; color: var(--text);">{{ totalCollected|number_format(0, '.', ' ') }} <span style="font-size: 1rem; opacity: 0.6;">TND</span></div>
+                <div style="font-size: 0.8rem; font-weight: 700; color: var(--muted); text-transform: uppercase;">Récoltés</div>
+            </div>
+        </div>
+
+        <div class="glass-panel" style="padding: var(--space-lg); display: flex; align-items: center; gap: 20px;">
+            <div style="width: 60px; height: 60px; border-radius: var(--radius-lg); background: rgba(16, 185, 129, 0.1); color: #10b981; display: grid; place-items: center; font-size: 1.5rem;">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div>
+                <div style="font-size: 1.75rem; font-weight: 800; color: var(--text);">{{ activeCases }}</div>
+                <div style="font-size: 0.8rem; font-weight: 700; color: var(--muted); text-transform: uppercase;">Campagnes Actives</div>
+            </div>
+        </div>
+
+        <div class="glass-panel" style="padding: var(--space-lg); background: var(--grad-premium); color: white; border: none;">
+            <div style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; opacity: 0.9;">Taux de Réussite</div>
+            {% set rate = totalTarget > 0 ? (totalCollected / totalTarget * 100)|round(1) : 0 %}
+            <div style="font-size: 2.5rem; font-weight: 800;">{{ rate }}%</div>
+            <div style="height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; margin-top: 10px; overflow: hidden;">
+                <div style="width: {{ rate }}%; height: 100%; background: white;"></div>
+            </div>
+        </div>
+    </div>
+
+    {# Event Stats Section #}
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-lg); margin-bottom: var(--space-xl);" class="animate-up delay-2">
+        <div class="glass-panel" style="padding: var(--space-lg); border-left: 4px solid var(--brand); display: flex; align-items: center; gap: 15px;">
+            <div style="font-size: 1.5rem; color: var(--brand);"><i class="fa-solid fa-calendar-check"></i></div>
+            <div>
+                <div style="font-size: 0.7rem; font-weight: 700; color: var(--muted); text-transform: uppercase;">Total Événements</div>
+                <div style="font-size: 1.75rem; font-weight: 800; color: var(--text);">{{ totalEvents }}</div>
+            </div>
+        </div>
+        <div class="glass-panel" style="padding: var(--space-lg); border-left: 4px solid var(--accent); display: flex; align-items: center; gap: 15px;">
+            <div style="font-size: 1.5rem; color: var(--accent);"><i class="fa-solid fa-hourglass-start"></i></div>
+            <div>
+                <div style="font-size: 0.7rem; font-weight: 700; color: var(--muted); text-transform: uppercase;">À Venir</div>
+                <div style="font-size: 1.75rem; font-weight: 800; color: var(--text);">{{ upcomingEvents }}</div>
+            </div>
+        </div>
+        <div class="glass-panel" style="padding: var(--space-lg); border-left: 4px solid #10b981; display: flex; align-items: center; gap: 15px;">
+            <div style="font-size: 1.5rem; color: #10b981;"><i class="fa-solid fa-award"></i></div>
+            <div>
+                <div style="font-size: 0.7rem; font-weight: 700; color: var(--muted); text-transform: uppercase;">Réalisés</div>
+                <div style="font-size: 1.75rem; font-weight: 800; color: var(--text);">{{ completedEvents }}</div>
+            </div>
+        </div>
+    </div>
+
+    {# Main Layout: Charts & Tables #}
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-xl);" class="animate-up delay-2">
+        
+        {# Recent Activity #}
+        <div>
+            <div class="glass-panel" style="padding: 0; overflow: hidden;">
+                <div style="padding: 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="font-weight: 800; font-size: 1.25rem;">Dernières Campagnes</h3>
+                    <a href="{{ path('case_entity_index') }}" style="color: var(--brand); font-weight: 700; font-size: 0.875rem; text-decoration: none;">Voir tout <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Campagne</th>
+                                <th>Avancement</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for c in recentCases %}
+                            <tr>
+                                <td>
+                                    <div style="font-weight: 700; color: var(--text);">{{ c.title }}</div>
+                                    <div style="font-size: 0.75rem; color: var(--brand); font-weight: 600;">{{ c.category.name }}</div>
+                                </td>
+                                <td>
+                                    <div style="width: 120px;">
+                                        <div style="display: flex; justify-content: space-between; font-size: 0.7rem; font-weight: 800; margin-bottom: 4px;">
+                                            <span>{{ ((c.currentAmount / c.targetAmount) * 100)|round(0) }}%</span>
+                                            <span class="muted">{{ c.currentAmount|number_format(0) }} TND</span>
+                                        </div>
+                                        <div style="height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden;">
+                                            <div style="width: {{ (c.currentAmount / c.targetAmount * 100)|round(0) }}%; height: 100%; background: var(--brand);"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="font-size: 0.8rem; font-weight: 600;">{{ c.createdAt|date('d M Y') }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="3" style="padding: 3rem; text-align: center; color: var(--muted);">Aucune campagne trouvée.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        {# Quick Charts/Insights #}
+        <div style="display: flex; flex-direction: column; gap: var(--space-xl);">
+            <div class="glass-panel" style="padding: 24px;">
+                <h3 style="font-weight: 800; font-size: 1.1rem; margin-bottom: 1.5rem;">Répartition par Impact</h3>
+                <canvas id="impactChart" style="max-height: 220px;"></canvas>
+            </div>
+
+            <div class="glass-panel" style="padding: 24px; background: var(--bg-subtle);">
+                <h4 style="font-weight: 800; font-size: 0.9rem; color: var(--text); margin-bottom: 1rem;">Action d'urgence ⚡</h4>
+                <p style="font-size: 0.875rem; color: var(--muted); margin-bottom: 1.5rem;">Une de vos campagnes prioritaires n'a pas reçu de dons depuis 48h.</p>
+                <button class="btn btn-sm btn-primary" style="width: 100%;">Relancer la visibilité</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('impactChart').getContext('2d');
+    const data = {
+        labels: {{ categoriesLabels|json_encode|raw }},
+        datasets: [{
+            data: {{ categoriesValues|json_encode|raw }},
+            backgroundColor: [
+                '#0d9488',
+                '#6366f1',
+                '#10b981',
+                '#f59e0b',
+                '#ef4444'
+            ],
+            borderWidth: 0,
+            hoverOffset: 15
+        }]
+    };
+    
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: data,
+        options: {
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        usePointStyle: true,
+                        padding: 20,
+                        font: {
+                            family: 'Outfit',
+                            weight: '700',
+                            size: 11
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

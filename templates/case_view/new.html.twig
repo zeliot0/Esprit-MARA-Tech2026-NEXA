@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New CaseView{% endblock %}
+
+{% block body %}
+    <h1>Create new CaseView</h1>
+
+    {{ include('case_view/_form.html.twig') }}
+
+    <a href="{{ path('app_case_view_index') }}">back to list</a>
+{% endblock %}

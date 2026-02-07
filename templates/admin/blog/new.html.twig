@@ -1,0 +1,44 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Rédiger un article | Aychek Admin{% endblock %}
+{% block page_title %}{{ post is defined ? 'Modifier' : 'Nouveau' }} Article{% endblock %}
+
+{% block body %}
+<div style="max-width: 900px; margin: 0 auto;">
+    <form method="POST" class="glass-panel" style="padding: 40px; border-radius: var(--radius-2xl);">
+        <div style="margin-bottom: 32px;">
+            <label style="display: block; font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 12px;">Titre de l'article</label>
+            <input type="text" name="title" value="{{ post.title ?? '' }}" required class="form-input" style="font-size: 1.5rem; font-weight: 800; height: 64px; border-radius: var(--radius-lg);">
+        </div>
+
+        <div style="margin-bottom: 32px;">
+            <label style="display: block; font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 12px;">Résumé (SEO)</label>
+            <textarea name="summary" class="form-input" style="height: 100px; padding: 16px; border-radius: var(--radius-lg);">{{ post.summary ?? '' }}</textarea>
+        </div>
+
+        <div style="margin-bottom: 32px;">
+            <label style="display: block; font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 12px;">URL de l'image de couverture</label>
+            <input type="url" name="image_url" value="{{ post.image ?? '' }}" class="form-input" placeholder="https://images.unsplash.com/..." style="height: 52px; border-radius: var(--radius-lg);">
+        </div>
+
+        <div style="margin-bottom: 32px;">
+            <label style="display: block; font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 12px;">Contenu de l'article</label>
+            <textarea name="content" required class="form-input" style="height: 400px; padding: 24px; border-radius: var(--radius-lg); font-family: inherit; font-size: 1.1rem; line-height: 1.6;">{{ post.content ?? '' }}</textarea>
+        </div>
+
+        <div style="display: flex; gap: 40px; align-items: center; margin-bottom: 48px;">
+            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-weight: 700;">
+                <input type="checkbox" name="isPublished" {{ (post is defined and post.isPublished) ? 'checked' : '' }} style="width: 20px; height: 20px; accent-color: var(--brand);">
+                Publier immédiatement
+            </label>
+        </div>
+
+        <div style="display: flex; gap: 16px; justify-content: flex-end;">
+            <a href="{{ path('admin_blog_index') }}" class="btn btn-ghost">Annuler</a>
+            <button type="submit" class="btn btn-primary" style="padding: 0 40px; height: 56px; border-radius: var(--radius-full); font-weight: 800;">
+                <i class="fa-solid fa-floppy-disk"></i> Enregistrer {{ post is defined ? 'les modifications' : 'l\'article' }}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,303 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ post.title }} • Journal Aychek{% endblock %}
+
+{% block body %}
+{# Reading Progress Bar #}
+<div id="readProgress" style="position: fixed; top: 0; left: 0; height: 6px; background: var(--grad-premium); width: 0%; z-index: 9999; transition: width 0.1s ease; box-shadow: 0 2px 10px rgba(13, 148, 136, 0.3);"></div>
+
+<article style="max-width: 1000px; margin: 0 auto; padding-bottom: 10rem;">
+    <header style="padding: 120px 0 80px; text-align: center; position: relative;">
+        <div class="animate-up" style="margin-bottom: 3rem;">
+            <a href="{{ path('app_blog_index') }}" class="back-link">
+                <i class="fa-solid fa-arrow-left-long"></i> Retour aux histoires
+            </a>
+        </div>
+        
+        <div class="animate-up" style="display: inline-flex; align-items: center; gap: 10px; background: rgba(13, 148, 136, 0.05); padding: 8px 20px; border-radius: var(--radius-full); margin-bottom: 2rem; border: 1px solid rgba(13, 148, 136, 0.1);">
+            <i class="fa-solid fa-book-open-reader" style="color: var(--brand);"></i>
+            <span style="font-size: 0.8rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;">Temps de lecture : ~5 min</span>
+        </div>
+
+        <h1 class="animate-up" style="font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 950; margin-bottom: 2.5rem; line-height: 1; letter-spacing: -3px; color: var(--text);">{{ post.title }}</h1>
+        
+        <div class="animate-up" style="display: flex; align-items: center; justify-content: center; gap: 32px;">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--grad-premium); display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 1.2rem; border: 4px solid var(--surface); box-shadow: var(--shadow-lg);">
+                    {{ post.author.fullName|slice(0, 1)|upper }}
+                </div>
+                <div style="text-align: left;">
+                    <div style="font-weight: 900; font-size: 1.1rem; color: var(--text);">{{ post.author.fullName }}</div>
+                    <div style="font-size: 0.85rem; color: var(--muted); font-weight: 600;">Publié le {{ post.createdAt|date('d F Y') }}</div>
+                </div>
+            </div>
+            <div style="width: 1px; height: 40px; background: var(--border);"></div>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn-share" title="Partager sur Facebook"><i class="fa-brands fa-facebook-f"></i></button>
+                <button class="btn-share" title="Partager sur X"><i class="fa-brands fa-x-twitter"></i></button>
+                <button class="btn-share" title="Copier le lien" onclick="navigator.clipboard.writeText(window.location.href); alert('Lien copié !')"><i class="fa-solid fa-link"></i></button>
+            </div>
+        </div>
+    </header>
+
+    {% if post.image %}
+        <div class="animate-up immersive-hero">
+            <img src="{{ post.image }}" alt="{{ post.title }}">
+            <div class="hero-overlay"></div>
+        </div>
+    {% endif %}
+
+    <div class="animate-up blog-story">
+        {{ post.content|nl2br }}
+    </div>
+
+    <footer class="animate-up" style="margin-top: 10rem; padding-top: 6rem; border-top: 1px solid var(--border);">
+        <div class="end-card">
+            <div style="max-width: 600px;">
+                <h3 style="font-size: 2.5rem; font-weight: 950; margin-bottom: 1rem; letter-spacing: -1px;">Prêt à écrire la suite ?</h3>
+                <p style="font-size: 1.2rem; color: var(--muted); line-height: 1.6;">Votre soutien permet à des histoires comme celle-ci d'exister. Chaque don est un nouveau chapitre.</p>
+            </div>
+            <a href="{{ path('case_entity_consult') }}" class="btn btn-primary" style="padding: 24px 48px; border-radius: var(--radius-full); font-weight: 900; font-size: 1.1rem; box-shadow: var(--shadow-xl);">
+               <i class="fa-solid fa-heart-pulse"></i> Soutenir Aychek
+            </a>
+        </div>
+
+        {# --- DISCUSSION --- #}
+        <section id="discussion" style="margin-top: 8rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 3rem;">
+                <h3 style="font-weight: 950; font-size: 2rem; letter-spacing: -1px;"><i class="fa-solid fa-comments" style="color: var(--brand); margin-right: 15px;"></i> Conversations</h3>
+                <span class="badge" style="background: var(--surface2); color: var(--brand); font-weight: 900; padding: 10px 20px;">{{ post.comments|length }} MESSAGES</span>
+            </div>
+
+            <div class="comment-engine">
+                {% if app.user %}
+                    <form action="{{ path('app_blog_add_comment', {id: post.id}) }}" method="POST" class="comment-form">
+                        <textarea name="content" placeholder="Que vous inspire ce récit ?" required></textarea>
+                        <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+                            <button type="submit" class="hero-btn-sm">
+                                <i class="fa-solid fa-paper-plane"></i> Partager ma réaction
+                            </button>
+                        </div>
+                    </form>
+                {% else %}
+                    <div class="login-prompt">
+                        <i class="fa-solid fa-lock" style="font-size: 2rem; margin-bottom: 1.5rem; color: var(--brand);"></i>
+                        <h4 style="font-weight: 900; margin-bottom: 10px;">Identifiez-vous pour participer</h4>
+                        <p class="muted" style="margin-bottom: 2rem;">Rejoignez la communauté Aychek pour échanger avec les autres membres.</p>
+                        <a href="{{ path('app_login') }}" class="btn btn-ghost" style="border-radius: var(--radius-full); padding: 15px 40px; font-weight: 800; border: 2px solid var(--border);">Se connecter</a>
+                    </div>
+                {% endif %}
+
+                <div class="comments-list">
+                    {% for comment in post.comments|sort((a, b) => b.createdAt <=> a.createdAt) %}
+                        <div class="comment-item animate-up">
+                            <div class="comment-avatar">
+                                {{ comment.author.fullName|slice(0, 1)|upper }}
+                            </div>
+                            <div class="comment-content">
+                                <div class="comment-header">
+                                    <span class="author-name">{{ comment.author.fullName }}</span>
+                                    <span class="comment-date">{{ comment.createdAt|date('d M Y à H:i') }}</span>
+                                </div>
+                                <div class="comment-bubble">
+                                    {{ comment.content|nl2br }}
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div style="text-align: center; padding: 60px; background: var(--bg-subtle); border-radius: var(--radius-2xl); border: 2px dashed var(--border);">
+                            <p style="font-weight: 800; color: var(--muted); margin: 0;">Aucun message pour le moment. Inspirez les autres en premier !</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </footer>
+</article>
+
+<style>
+    .back-link {
+        text-decoration: none;
+        font-weight: 900;
+        color: var(--muted);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        transition: color 0.3s ease, transform 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .back-link:hover {
+        color: var(--brand);
+        transform: translateX(-10px);
+    }
+
+    .btn-share {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--text);
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-share:hover {
+        background: var(--brand);
+        color: white;
+        border-color: var(--brand);
+        transform: translateY(-5px) scale(1.1);
+        box-shadow: 0 10px 20px rgba(13, 148, 136, 0.2);
+    }
+
+    .immersive-hero {
+        width: calc(100% + 100px);
+        margin-left: -50px;
+        height: 600px;
+        border-radius: var(--radius-3xl);
+        overflow: hidden;
+        margin-bottom: 6rem;
+        box-shadow: 0 60px 120px rgba(0,0,0,0.2);
+        position: relative;
+    }
+
+    .immersive-hero img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.4) 100%);
+    }
+
+    .blog-story {
+        font-size: 1.4rem;
+        line-height: 1.8;
+        color: var(--text-soft);
+        font-family: 'Inter', sans-serif;
+        letter-spacing: -0.01em;
+    }
+
+    .blog-story p { margin-bottom: 2.5rem; }
+
+    .end-card {
+        background: var(--surface2);
+        padding: 60px;
+        border-radius: var(--radius-3xl);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 40px;
+        border: 1px solid var(--border);
+    }
+
+    .comment-form textarea {
+        width: 100%;
+        height: 150px;
+        padding: 30px;
+        border-radius: var(--radius-2xl);
+        border: 2px solid var(--border);
+        background: var(--surface);
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        font-family: inherit;
+        resize: none;
+    }
+
+    .comment-form textarea:focus {
+        border-color: var(--brand);
+        box-shadow: 0 0 0 6px rgba(13, 148, 136, 0.1);
+        outline: none;
+    }
+
+    .hero-btn-sm {
+        background: var(--brand);
+        color: white;
+        padding: 18px 40px;
+        border-radius: var(--radius-full);
+        font-weight: 900;
+        border: none;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .hero-btn-sm:hover { transform: translateY(-3px) scale(1.02); }
+
+    .login-prompt {
+        text-align: center;
+        padding: 60px;
+        background: var(--surface2);
+        border-radius: var(--radius-3xl);
+        border: 1px solid var(--border);
+    }
+
+    .comment-item {
+        display: flex;
+        gap: 24px;
+        margin-top: 48px;
+    }
+
+    .comment-avatar {
+        width: 52px;
+        height: 52px;
+        border-radius: 20px;
+        background: var(--surface2);
+        display: grid;
+        place-items: center;
+        color: var(--brand);
+        font-weight: 900;
+        font-size: 1.2rem;
+        border: 1px solid var(--border);
+        flex-shrink: 0;
+    }
+
+    .comment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 12px;
+        gap: 15px;
+    }
+
+    .author-name { font-weight: 950; font-size: 1.1rem; color: var(--text); }
+    .comment-date { font-size: 0.8rem; color: var(--muted); font-weight: 700; text-transform: uppercase; }
+
+    .comment-bubble {
+        background: var(--surface);
+        padding: 24px 32px;
+        border-radius: 0 24px 24px 24px;
+        border: 1px solid var(--border);
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: var(--text-soft);
+        box-shadow: var(--shadow-sm);
+    }
+
+    @media (max-width: 768px) {
+        .immersive-hero { width: 100%; margin-left: 0; height: 350px; }
+        .end-card { flex-direction: column; text-align: center; padding: 40px 30px; }
+    }
+</style>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        document.getElementById("readProgress").style.width = scrolled + "%";
+    });
+</script>
+{% endblock %}
