@@ -1,200 +1,185 @@
 # AYCHek  
-## Digital Solidarity Platform for Humanitarian Causes  
-### Hackathon Project
+## Plateforme Solidaire Digitale pour la Mise en Avant des Causes Humanitaires  
+### Projet Hackathon
 
 ---
 
-## Executive Summary
+## 🏁 Contexte du Hackathon
 
-**AYCHek** is a digital solidarity platform designed to enhance the visibility, organization, and impact of humanitarian causes.  
-Developed during a hackathon, the project delivers a **functional, scalable, and socially impactful solution** that addresses a real-world problem: the lack of accessible and transparent digital tools for humanitarian initiatives.
+Dans le cadre de ce hackathon, notre équipe a conçu **AYCHek**, une application web solidaire ayant pour objectif de répondre à un problème social concret :  
+👉 **la difficulté pour les causes humanitaires d’atteindre le grand public et de présenter leur impact de manière claire et transparente**.
 
-The platform combines **clarity, usability, and strong visual communication** to encourage public engagement and raise awareness of urgent humanitarian needs.
-
----
-
-## 1. Hackathon Context
-
-This project was developed within the limited timeframe of a hackathon, under constraints of:
-- Rapid ideation
-- Functional delivery
-- Clear social impact
-- Technical feasibility
-- Demonstrability
-
-Despite these constraints, AYCHek provides a **coherent and extensible solution**, ready for further development beyond the hackathon environment.
+Le projet a été développé dans un temps limité, en mettant l’accent sur :
+- l’impact social,
+- la simplicité d’utilisation,
+- l’innovation fonctionnelle,
+- la solidité technique.
 
 ---
 
-## 2. Problem Statement
+## 🌍 Problématique
 
-Humanitarian organizations and social initiatives face several challenges:
+Malgré la multiplication des initiatives solidaires, plusieurs obstacles persistent :
+- Faible visibilité des causes humanitaires
+- Informations dispersées et peu structurées
+- Absence de suivi clair des objectifs financiers
+- Difficulté à mettre en avant les situations urgentes
 
-- Limited digital visibility
-- Fragmented and unstructured information
-- Insufficient transparency regarding funding goals
-- Difficulty highlighting urgent and critical situations
-- Low public engagement due to poor user experience
-
-These challenges significantly reduce the effectiveness and reach of humanitarian actions.
+Ces limitations réduisent l’engagement des citoyens et l’efficacité des actions solidaires.
 
 ---
 
-## 3. Proposed Solution
+## 💡 Solution proposée : AYCHek
 
-**AYCHek** addresses these challenges by providing:
+**AYCHek** est une plateforme web qui permet de :
 
-- A centralized platform for humanitarian causes
-- Structured categorization of initiatives
-- Visual prioritization of urgent cases
-- Clear financial progress indicators
-- An intuitive and responsive user interface
+- Centraliser les causes humanitaires
+- Les classer par catégories
+- Mettre en avant les causes urgentes
+- Visualiser l’évolution des collectes
+- Sensibiliser les utilisateurs à l’impact social
 
-The solution is designed to be **simple to understand**, **fast to navigate**, and **emotionally engaging**, making solidarity actions more accessible to a wide audience.
-
----
-
-## 4. Project Objectives
-
-### 4.1 Primary Objective
-To design and implement a web-based platform that **enhances awareness and engagement around humanitarian causes**.
-
-### 4.2 Secondary Objectives
-- Improve transparency in humanitarian fundraising
-- Encourage user interaction and exploration
-- Highlight urgent humanitarian needs
-- Provide a scalable technical foundation for future expansion
+L’application propose une **interface moderne, intuitive et responsive**, pensée pour être comprise rapidement par tout type d’utilisateur.
 
 ---
 
-## 5. Core Features
+## 🎯 Objectifs du projet
 
-### 5.1 Cause Discovery
-- Dynamic list of humanitarian causes
-- Keyword-based search
-- Category-based filtering
-- Sorting by urgency or recency
+### Objectif principal
+Créer une application web fonctionnelle permettant de **valoriser les causes humanitaires** et d’encourager l’engagement solidaire.
 
-### 5.2 Urgency Highlighting
-- Visual “URGENT” indicators
-- Priority-based presentation
-- Animated emphasis for critical causes
-
-### 5.3 Impact Visualization
-- Financial objectives per cause
-- Current collected amount
-- Dynamic progress bars
-- Clear and readable indicators
-
-### 5.4 User Interface
-- Modern and minimal design
-- Responsive layout (desktop & mobile)
-- Hero Slider with impactful visuals
-- Smooth animations and transitions
+### Objectifs secondaires
+- Faciliter l’accès à l’information humanitaire
+- Améliorer la transparence des collectes
+- Mettre en avant les urgences humanitaires
+- Proposer une base technique évolutive après le hackathon
 
 ---
 
-## 6. What Was Achieved During the Hackathon
+## ⚙️ Fonctionnalités développées
 
-- Problem analysis and solution definition
-- Functional and technical design
-- UI/UX conception
-- Backend and frontend development
-- Data integration
-- Functional testing
-- Demo-ready version
+### 🔍 Consultation des causes
+- Liste dynamique des causes
+- Recherche par mot-clé
+- Filtrage par catégorie
+- Tri par urgence ou date
+
+### ❤️ Mise en avant des urgences
+- Badge **URGENT**
+- Effets visuels pour attirer l’attention
+- Priorisation des causes critiques
+
+### 📊 Suivi de l’impact
+- Objectif financier par cause
+- Montant collecté
+- Barre de progression dynamique
+- Indicateurs visuels clairs
+
+### 🎨 Interface utilisateur
+- Page d’accueil avec **Hero Slider animé**
+- Cartes interactives
+- Design responsive (desktop & mobile)
+- Animations CSS & JavaScript
 
 ---
 
-## 7. Technical Stack
+## 🚀 Ce qui a été réalisé pendant le hackathon
+
+- Analyse rapide du besoin social
+- Définition du concept AYCHek
+- Conception UI/UX
+- Développement frontend et backend
+- Intégration des données
+- Tests fonctionnels
+- Préparation de la démonstration finale
+
+---
+
+## 🛠️ Technologies utilisées
 
 ### Backend
 - **PHP 8.2**
 - **Symfony 6.4**
 - **Doctrine ORM**
-- **Twig Template Engine**
+- **Twig**
 
 ### Frontend
-- HTML5
-- CSS3
+- HTML5 / CSS3
 - JavaScript (Vanilla)
 - Font Awesome
-- CSS & JS animations
+- Animations CSS
 
-### Database
+### Base de données
 - MySQL / MariaDB
 
 ---
 
-## 8. System Architecture
+## 🧠 Architecture technique
 
-AYCHek follows the **Model–View–Controller (MVC)** architectural pattern:
+L’application repose sur une architecture **MVC (Model – View – Controller)** :
 
-- **Model**: Doctrine entities and repositories
-- **View**: Twig templates
-- **Controller**: Business logic and routing
+- **Model** : Entités Doctrine et Repositories
+- **View** : Templates Twig
+- **Controller** : Logique métier et routage
 
-This architecture ensures:
-- Clear separation of concerns
-- Code maintainability
-- Easy scalability
-
----
-
-## 9. Demonstration Scenario (Pitch Flow)
-
-1. Access the AYCHek homepage
-2. Discover featured and urgent causes
-3. Apply filters and search criteria
-4. Open a detailed cause view
-5. Analyze financial progress and impact
-6. Understand the urgency and social value
+Cette architecture garantit :
+- Une séparation claire des responsabilités
+- Une maintenance facilitée
+- Une évolution rapide après le hackathon
 
 ---
 
-## 10. Current Limitations
+## 📋 Scénario de démonstration (Demo Day)
 
-Due to hackathon constraints:
-- No online payment integration
-- No user authentication system
-- Limited administrative functionalities
-
-These limitations were intentionally accepted to focus on **core value delivery**.
-
----
-
-## 11. Future Roadmap
-
-- Secure online donation system
-- User authentication and role management
-- Administrative dashboard
-- Advanced analytics and statistics
-- Multilingual support (FR / AR / EN)
-- REST API and mobile application
+1. Accès à la page d’accueil AYCHek
+2. Découverte des causes mises en avant
+3. Filtrage par catégorie ou urgence
+4. Consultation d’une cause détaillée
+5. Visualisation de la progression financière
+6. Sensibilisation à l’impact de la cause
 
 ---
 
-## 12. Project Value Proposition
+## 🔐 Limites actuelles
 
-- Strong social impact
-- Clear and intuitive user experience
-- Effective urgency communication
-- Solid and extensible technical base
-- Immediate demo capability
+- Pas de paiement en ligne
+- Pas d’authentification utilisateur
+- Fonctionnalités administratives basiques
 
----
-
-## 13. License
-
-This project was developed exclusively for a **hackathon context**.  
-It is intended for educational, demonstrative, and non-commercial use.
+Ces limites sont dues aux contraintes temporelles du hackathon.
 
 ---
 
-## 14. Conclusion
+## 🔮 Perspectives d’évolution
 
-**AYCHek** demonstrates how technology can be leveraged to amplify humanitarian impact by combining thoughtful design, structured information, and technical robustness.
+- Intégration d’un système de don en ligne sécurisé
+- Authentification et gestion des rôles
+- Tableau de bord administrateur
+- Statistiques avancées
+- Multilingue (Français / Arabe / Anglais)
+- API REST et application mobile
 
-The project represents a **credible foundation for a real-world solidarity platform**, capable of evolving beyond the hackathon scope.
+---
 
-> **AYCHek — See the cause. Understand the urgency. Act with impact.**
+## 🏆 Valeur ajoutée du projet
+
+- Fort impact social
+- Interface simple et accessible
+- Mise en avant intelligente des urgences
+- Base technique solide et évolutive
+- Solution immédiatement démontrable
+
+---
+
+## 📄 Licence
+
+Projet réalisé dans le cadre d’un **hackathon**.  
+Usage libre à des fins éducatives et démonstratives.
+
+---
+
+## 🌱 Conclusion
+
+**AYCHek** démontre comment la technologie peut être utilisée comme un levier puissant pour renforcer la solidarité et maximiser l’impact des initiatives humanitaires.
+
+> *AYCHek — Un clic pour voir, un pas pour aider.*
